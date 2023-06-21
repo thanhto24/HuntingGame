@@ -25,7 +25,7 @@ using namespace std;
 // 00 09 09 09 09 00
 // 00 00 00 00 00 00
 
-const char MSSV[] = " 388400414212";
+const char MSSV[] = " 174322388441";
 
 void gotoxy(int x, int y)
 {
@@ -139,14 +139,14 @@ void init(Snake &snake, Board &board)
     setValue(snake.head, spawnPoint);
     snake.body.push_back(snake.head);
 
-    setValue(spawnPoint, mp(5, 4));
-    snake.body.push_back(spawnPoint);
+    // setValue(spawnPoint, mp(5, 4));
+    // snake.body.push_back(spawnPoint);
 
-    setValue(spawnPoint, mp(5, 3));
-    snake.body.push_back(spawnPoint);
+    // setValue(spawnPoint, mp(5, 3));
+    // snake.body.push_back(spawnPoint);
 
-    setValue(spawnPoint, mp(5, 2));
-    snake.body.push_back(spawnPoint);
+    // setValue(spawnPoint, mp(5, 2));
+    // snake.body.push_back(spawnPoint);
 
     board.viewBoard[snake.head.y][snake.head.x] = -1;
 
@@ -260,13 +260,13 @@ void move(Snake &snake, Board &board)
     board.viewBoard[snake.head.y][snake.head.x] = -1;
 }
 
-const int snakeColor = 5;
-const int appleColor = 4;
-const int bigAppleColor = 6;
-const int wallColor = 9;
+const int snakeColor = 14;
+const int appleColor = 221;
+const int bigAppleColor = 238;
+const int wallColor = 68;
 const int gateColor = 3;
 const int basicColor = 7;
-const int backgroundColor = 10;
+const int backgroundColor = 114;
 
 void draw(const Snake snake, const Board board)
 {
@@ -284,22 +284,24 @@ void draw(const Snake snake, const Board board)
             else if (board.viewBoard[i][j] == 'a')
             {
                 TextColor(appleColor);
-                cout << "a ";
+                cout << "  ";
             }
             else if (board.viewBoard[i][j] == 'A')
             {
                 TextColor(bigAppleColor);
-                cout << "A ";
+                cout << "  ";
             }
             else if (board.viewBoard[i][j] == 1)
             {
                 TextColor(wallColor);
-                cout << "|";
+                SetConsoleOutputCP(65001);
+                cout << "║║";
             }
             else if (board.viewBoard[i][j] == 2)
             {
                 TextColor(wallColor);
-                cout << "- ";
+                SetConsoleOutputCP(65001);
+                cout << "══";
             }
             else if (board.viewBoard[i][j] >= 9 && board.viewBoard[i][j] <= 13)
             {
