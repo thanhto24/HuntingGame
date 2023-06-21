@@ -74,7 +74,8 @@ struct Board
     int score;
     int scoreToPass;
     bool isWin;
-    vector<iii> gate;
+    vector<iii> gate; // pair<<vị trí (x, y)>, giá trị>
+    vector<iii> teleport;
     bool updated;
 };
 
@@ -107,7 +108,7 @@ string intToString(int x)
 void init(Snake &snake, Board &board)
 {
     Point spawnPoint;
-    board.level = 1;
+    board.level = 2;
     string address = "Level/";
     address += intToString(board.level);
     address += ".txt";
@@ -130,6 +131,10 @@ void init(Snake &snake, Board &board)
             {
                 board.gate.push_back(mp(mp(i, j), board.viewBoard[i][j]));
                 board.viewBoard[i][j] = 0;
+            }
+            if (board.viewBoard[i][j] >= 29 && board.viewBoard[i][j] <= 33)
+            {
+                board.teleport.push_back(mp(mp(i, j), board.viewBoard[i][j]));
             }
         }
 
@@ -239,9 +244,35 @@ void move(Snake &snake, Board &board)
         board.haveBigApple = false;
         board.score += 500;
     }
-
     if (board.viewBoard[snake.head.y][snake.head.x] == 1 || board.viewBoard[snake.head.y][snake.head.x] == 2 || board.viewBoard[snake.head.y][snake.head.x] <= -1)
         return void(board.game_active = false);
+    // !!!
+
+    if (board.viewBoard[snake.head.y][snake.head.x] == 29)
+        return void(board.game_active = false);
+
+    if (board.viewBoard[snake.head.y][snake.head.x] >= 30 && board.viewBoard[snake.head.y][snake.head.x] <= 33)
+    {
+        if (board.viewBoard[snake.head.y][snake.head.x] % 10 == snake.direction)
+        {
+            if (snake.head.x == board.teleport[2].first.second)
+            {
+                snake.head.x = board.teleport[7].first.second - 1;
+                snake.head.y = board.teleport[7].first.first;
+            }
+            else if (snake.head.x == board.teleport[7].first.second)
+            {
+                snake.head.x = board.teleport[2].first.second + 1;
+                snake.head.y = board.teleport[2].first.first;
+            }
+        }
+        else
+        {
+            return void(board.game_active = false);
+        }
+    }
+
+    //
     if (board.score >= board.scoreToPass || board.updated)
     {
         if (!board.updated)
@@ -267,15 +298,17 @@ const int wallColor = 68;
 const int gateColor = 3;
 const int basicColor = 7;
 const int backgroundColor = 114;
+const int teleportGateColor = 176;
 
 void draw(const Snake snake, const Board board)
 {
+    Sleep(50);
     gotoxy(0, 3);
     for (int i = 0; i < board.hei; i++)
     {
         for (int j = 0; j < board.wid; j++)
         {
-            // cout << board.viewBoard[i][j] << ' ';
+            //  cout << board.viewBoard[i][j] << ' ';
             if (board.viewBoard[i][j] < 0)
             {
                 TextColor(snakeColor);
@@ -308,6 +341,14 @@ void draw(const Snake snake, const Board board)
                 TextColor(gateColor);
                 cout << "O ";
             }
+            // !
+            else if (board.viewBoard[i][j] >= 29 && board.viewBoard[i][j] <= 33)
+            {
+                TextColor(teleportGateColor);
+                SetConsoleOutputCP(65001);
+                cout << "X ";
+            }
+            //
             else
             {
                 TextColor(backgroundColor);
