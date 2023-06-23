@@ -27,6 +27,22 @@ using namespace std;
 
 const char MSSV[] = " 174322388441";
 
+void FixConsoleWindow()
+{
+    HWND consoleWindow = GetConsoleWindow();
+    LONG style = GetWindowLong(consoleWindow, GWL_STYLE);
+    style = style & ~(WS_MAXIMIZEBOX) & ~(WS_THICKFRAME);
+    SetWindowLong(consoleWindow, GWL_STYLE, style);
+
+    RECT windowRect;
+    GetWindowRect(consoleWindow, &windowRect);
+
+    int width = 1080;
+    int height = 500;
+
+    MoveWindow(consoleWindow, windowRect.left, windowRect.top, width, height, TRUE);
+}
+
 void gotoxy(int x, int y)
 {
     static HANDLE h = NULL;
@@ -321,8 +337,7 @@ const int landMineColor = 16;
 
 void draw(const Snake snake, const Board board)
 {
-    // Sleep(50);
-    gotoxy(0, 3);
+    gotoxy(0, 0);
     for (int i = 0; i < board.hei; i++)
     {
         for (int j = 0; j < board.wid; j++)
@@ -382,17 +397,13 @@ void draw(const Snake snake, const Board board)
         }
         cout << endl;
     }
-    // gotoxy(0, 40);
-    // for (int i = 0; i < snake.body.size(); i++)
-    //     cout << snake.body[i].y << ' ' << snake.body[i].x << endl;
-    // cout << snake.tail.y << ' ' << snake.tail.x << endl;
 }
 
 bool outRangeGate(int y, int x, const Board board)
 {
     int sz = board.gate.size();
     int minX = board.gate[0].f.s, minY = board.gate[0].f.f;
-    int maxX = board.gate[sz - 1].f.s, maxY = board.gate[sz - 1].f.f; // sua lai tu .f.s -> .f.f
+    int maxX = board.gate[sz - 1].f.s, maxY = board.gate[sz - 1].f.s; // sua lai tu .f.s -> .f.f
     if (y >= minY - 1 && y <= maxY + 1)
         if (x >= minX - 1 && x <= maxX + 1)
             return false;
@@ -425,7 +436,7 @@ void spawnApple(Board &board, bool isBigApple)
     int tmpX = 0, tmpY = 0;
     tmpX = rand() % board.wid;
     tmpY = rand() % board.hei;
-    while (board.viewBoard[tmpY][tmpX] != 0 && outRangeGate(tmpY, tmpX, board) && outRangeTeleport(tmpY, tmpX, board) && outRangeLandmine(tmpX, tmpY, board))
+    while (board.viewBoard[tmpY][tmpX] != 0 || !outRangeGate(tmpY, tmpX, board) && outRangeTeleport(tmpY, tmpX, board) && outRangeLandmine(tmpX, tmpY, board))
     {
         tmpX = rand() % board.wid;
         tmpY = rand() % board.hei;
@@ -508,7 +519,7 @@ void process(Snake &snake, Board &board)
         if (!board.score)
             break;
         eatAndGrown(snake, board);
-        cout << board.score << " / " << board.scoreToPass << endl;
+        cout << board.score << " / " << board.scoreToPass << "  " << endl;
     }
     // system("cls");
     // gotoxy(5, 5);
@@ -521,6 +532,8 @@ void process(Snake &snake, Board &board)
 
 int main()
 {
+    FixConsoleWindow();
+    srand(time(0));
     Board board;
     Snake snake;
     set_cursor(false);
