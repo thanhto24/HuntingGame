@@ -61,6 +61,7 @@ struct Snake
     Point head, tail;
     int direction;
     bool feed;
+    bool turnRed;
 };
 
 struct Board
@@ -76,6 +77,7 @@ struct Board
     bool isWin;
     vector<iii> gate; // pair<<vị trí (x, y)>, giá trị>
     vector<iii> teleport;
+    vector<Point> landMines;
     bool updated;
 };
 
@@ -136,6 +138,11 @@ void init(Snake &snake, Board &board)
             {
                 board.teleport.push_back(mp(mp(i, j), board.viewBoard[i][j]));
             }
+            if (board.viewBoard[i][j] == 99)
+            {
+                Point temp; temp.x = i; temp.y = j;
+                board.landMines.push_back(temp);
+            }
         }
 
     fin.close();
@@ -170,6 +177,7 @@ void init(Snake &snake, Board &board)
     board.score = snake.body.size() * 100;
     board.isWin = false;
     board.scoreToPass = (board.hei + board.wid) * 20 * board.level;
+    // board.scoreToPass = 100;
     board.updated = false;
 }
 
@@ -246,11 +254,10 @@ void move(Snake &snake, Board &board)
     }
     if (board.viewBoard[snake.head.y][snake.head.x] == 1 || board.viewBoard[snake.head.y][snake.head.x] == 2 || board.viewBoard[snake.head.y][snake.head.x] <= -1)
         return void(board.game_active = false);
-    // !!!
 
+    // 251 - 273: Teloport Gate
     if (board.viewBoard[snake.head.y][snake.head.x] == 29)
         return void(board.game_active = false);
-
     if (board.viewBoard[snake.head.y][snake.head.x] >= 30 && board.viewBoard[snake.head.y][snake.head.x] <= 33)
     {
         if (board.viewBoard[snake.head.y][snake.head.x] % 10 == snake.direction)
@@ -271,8 +278,19 @@ void move(Snake &snake, Board &board)
             return void(board.game_active = false);
         }
     }
+    // dinh boom
+    if (board.viewBoard[snake.head.y][snake.head.x] == 99)
+    {
+        int len = snake.body.size() / 2;
+        snake.turnRed = true;
 
-    //
+        for (int i = 0; i <= len; i++)
+        {
+            board.viewBoard[snake.body[snake.body.size() - 1].y][snake.body[snake.body.size() - 1].x] = 0;
+            board.score -= 100;
+            snake.body.pop_back();
+        }
+    }
     if (board.score >= board.scoreToPass || board.updated)
     {
         if (!board.updated)
@@ -299,10 +317,11 @@ const int gateColor = 3;
 const int basicColor = 7;
 const int backgroundColor = 114;
 const int teleportGateColor = 176;
+const int landMineColor = 16;
 
 void draw(const Snake snake, const Board board)
 {
-    Sleep(50);
+    // Sleep(50);
     gotoxy(0, 3);
     for (int i = 0; i < board.hei; i++)
     {
@@ -311,7 +330,10 @@ void draw(const Snake snake, const Board board)
             //  cout << board.viewBoard[i][j] << ' ';
             if (board.viewBoard[i][j] < 0)
             {
-                TextColor(snakeColor);
+                if (snake.turnRed)
+                    TextColor(wallColor);
+                else
+                    TextColor(snakeColor);
                 cout << MSSV[board.viewBoard[i][j] * -1] << ' ';
             }
             else if (board.viewBoard[i][j] == 'a')
@@ -341,14 +363,16 @@ void draw(const Snake snake, const Board board)
                 TextColor(gateColor);
                 cout << "O ";
             }
-            // !
             else if (board.viewBoard[i][j] >= 29 && board.viewBoard[i][j] <= 33)
             {
                 TextColor(teleportGateColor);
-                SetConsoleOutputCP(65001);
-                cout << "X ";
+                cout << "  ";
             }
-            //
+            else if (board.viewBoard[i][j] == 99)
+            {
+                TextColor(landMineColor);
+                cout << "  ";
+            }
             else
             {
                 TextColor(backgroundColor);
@@ -368,9 +392,30 @@ bool outRangeGate(int y, int x, const Board board)
 {
     int sz = board.gate.size();
     int minX = board.gate[0].f.s, minY = board.gate[0].f.f;
-    int maxX = board.gate[sz - 1].f.s, maxY = board.gate[sz - 1].f.s;
+    int maxX = board.gate[sz - 1].f.s, maxY = board.gate[sz - 1].f.f; // sua lai tu .f.s -> .f.f
     if (y >= minY - 1 && y <= maxY + 1)
         if (x >= minX - 1 && x <= maxX + 1)
+            return false;
+    return true;
+}
+
+bool outRangeTeleport(int y, int x, const Board board)
+{
+    int minX_1 = board.teleport[0].f.s, minY_1 = board.teleport[0].f.f;
+    int maxX_1 = board.teleport[4].f.s, maxY_1 = board.teleport[4].f.f;
+    int minX_2 = board.teleport[5].f.s, minY_2 = board.teleport[5].f.f;
+    int maxX_2 = board.teleport[9].f.s, maxY_2 = board.teleport[9].f.f;
+    if ((y >= minY_1 - 1 && y <= maxY_1 + 1) || (y >= minY_2 - 1 && y <= maxY_2 + 1))
+        if ((x >= minX_1 - 1 && x <= maxX_1 + 1) || (x >= minX_2 - 1 && x <= maxX_2 + 1))
+            return false;
+    return true;
+}
+
+bool outRangeLandmine(int y, int x, const Board board)
+{
+    int sz = board.landMines.size();
+    for (int i = 0; i < sz; i++)
+        if (y == board.landMines[i].y || x == board.landMines[i].x)
             return false;
     return true;
 }
@@ -380,7 +425,7 @@ void spawnApple(Board &board, bool isBigApple)
     int tmpX = 0, tmpY = 0;
     tmpX = rand() % board.wid;
     tmpY = rand() % board.hei;
-    while (board.viewBoard[tmpY][tmpX] != 0 && outRangeGate(tmpY, tmpX, board))
+    while (board.viewBoard[tmpY][tmpX] != 0 && outRangeGate(tmpY, tmpX, board) && outRangeTeleport(tmpY, tmpX, board) && outRangeLandmine(tmpX, tmpY, board))
     {
         tmpX = rand() % board.wid;
         tmpY = rand() % board.hei;
@@ -400,6 +445,16 @@ void eatAndGrown(Snake &snake, const Board board)
         snake.body.push_back(snake.tail);
     snake.feed = false;
 }
+// dinh boom
+// void eatLandmine(Snake &snake, const Board board)
+// {
+//     if (board.viewBoard[snake.head.y][snake.head.x] == 99)
+//     {
+//         TextColor(64);
+//         board.viewBoard[snake.body[snake.body.size() - 1].y][snake.body[snake.body.size() - 1].x] = 0;
+//         snake.body.pop_back();
+//     }
+// }
 
 int secondPassed(int h, int m, int s, int &preS, int &score)
 {
@@ -444,6 +499,7 @@ void process(Snake &snake, Board &board)
         if (!board.game_active || board.isWin)
             break;
         draw(snake, board);
+        snake.turnRed = false;
         if (secondPassed(board.hh, board.mm, board.ss, preS, board.score) % frequencyOfApple == 0)
             if (snake.body.size() >= 3 * numToSpawnBigApple / 2 && snake.body.size() % numToSpawnBigApple == 0 && !board.haveBigApple)
                 spawnApple(board, 1);
