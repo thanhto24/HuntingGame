@@ -1,8 +1,10 @@
 #include <iostream>
 #include <windows.h> //color, gotoxy, ...
 #include <conio.h>   //kbhit
+#include <cstring>
 #include <string.h>
 #include <string>
+#include <sstream>
 #include <vector>
 #include <stdlib.h> //random
 #include <fstream>  // file
@@ -97,6 +99,23 @@ struct Board
     bool updated;
 };
 
+struct User
+{
+    string fileName;
+    vector<pair<int, int>> bodyOfSnake;
+    int points;
+    int level;
+    // char account[99];
+    // char password[99];
+    // char fileName[99];
+};
+
+/*
+    Lúc đầu Login vào sẽ hiện ra các tên file, nếu chưa có tên file nào thì sẽ kêu người dùng nhập vào tên file và lưu vao User.fileName.
+    Trong quá trình chơi nếu người chơi nhấn Z thì file (có tên fileName) sẽ cập nhật các chỉ số.
+    Nếu người chơi muốn thoát ra ngoài Menu chính thì sẽ lưu lại fileName.
+*/
+
 void setValue(Point &a, ii b)
 {
     a.x = b.s;
@@ -126,7 +145,6 @@ string intToString(int x)
 void init(Snake &snake, Board &board)
 {
     Point spawnPoint;
-    board.level = 2;
     string address = "Level/";
     address += intToString(board.level);
     address += ".txt";
@@ -192,36 +210,203 @@ void init(Snake &snake, Board &board)
     board.haveBigApple = false;
     board.score = snake.body.size() * 100;
     board.isWin = false;
-    board.scoreToPass = (board.hei + board.wid) * 20 * board.level;
+    board.scoreToPass = 1000;
     // board.scoreToPass = 100;
     board.updated = false;
 }
 
-int getDirection(Snake snake)
+User getUser(string line)
+{
+    User user;
+    stringstream s(line);
+    string buf;
+
+    getline(s, buf, ',');
+    user.fileName = buf;
+
+    getline(s, buf, '(');
+    getline(s, buf, ')');
+    string coordinates = buf;
+    stringstream _s(coordinates);
+    int len = coordinates.length();
+
+    pair<int, int> temp;
+    while (len)
+    {
+        getline(_s, buf, '{'); len--;
+        getline(_s, buf, ','); len --; len -= buf.length();
+        stringstream t1(buf); t1 >> temp.first;
+        // temp.first = stoi(buf);
+        getline(_s, buf, '}'); len --; len -= buf.length();
+        stringstream t2(buf); t2 >> temp.second;
+        // temp.second = stoi(buf);
+        user.bodyOfSnake.push_back(temp);
+        temp = {0, 0};
+    }
+
+    getline(s, buf, ',');
+    getline(s, buf, ',');
+    stringstream t1(buf); t1 >> user.points;
+    // user.points = stoi(buf);
+
+    getline(s, buf, '\n');
+    stringstream t2(buf); t2 >> user.level;
+    // user.level = stoi(buf);
+
+    return user;
+}
+
+void displayFiles()
+{
+    ifstream ifs("out.txt");
+    vector<User> users;
+
+    if (ifs.fail())
+    {
+        cout << "Error opening file: out,txt" << endl;
+        return;
+    }
+    if (!ifs.eof())
+    {
+        string line;
+        while (getline(ifs, line))
+            users.push_back(getUser(line));
+    }
+    for (int i = 0; i < users.size(); i++)
+        cout << "FILE NAME: " << users[i].fileName << " - Scores: " << users[i].points << " - Level: " << users[i].level << endl;
+    ifs.close();
+}
+
+void saveFiles(Snake snake, Board board, User user)
+{
+    // (Tên File)-tọa dộ x của rắn-tọa độ y của rắn-độ dài của rắn-điểm-level
+    // Tên File,({x, y}{x,y}...{x,y})(Tọa độ các điểm trên thân rắn, đầu rắn là {x,y} đầu tiên),điểm,level
+    bool beFound = false;
+    int position = 0;
+    string temp_name = user.fileName;
+    vector<string> allUsersFromFile;
+    
+    ifstream ifs("out.txt");
+
+    if (ifs.fail())
+    {
+        cout << "Error opening file: out.txt" << endl;
+        return;
+    }
+    if (!ifs.eof())
+    {
+        string line;
+        while (getline(ifs, line))
+        {
+            allUsersFromFile.push_back(line);
+            stringstream ss(line);
+            string buf;
+            getline(ss, buf, ',');
+            if (buf == temp_name)
+                beFound = true;
+            if (!beFound)
+                position ++;
+        }
+    }
+    ifs.close();
+
+    int size = allUsersFromFile.size();
+
+    if (!beFound)
+        size ++;
+
+    ofstream ofs;
+    ofs.open("out.txt");
+
+    if (ofs.fail())
+    {
+        cout << "Error opening file: out.txt" << endl;
+        return;
+    }
+
+    for (int i = 0; i < size; i++)
+    {
+        if (i != position)
+            ofs << allUsersFromFile[i] << endl;
+        else
+        {
+            ofs << user.fileName << ",(";
+            for (int i = 0; i < snake.body.size(); i++)
+                ofs << "{" << snake.body[i].x << "," << snake.body[i].y << "}";
+
+            ofs << ")," << board.score << "," << board.level << endl;
+        }
+    }
+
+    // ofs << user.fileName << ",(";
+    // for (int i = 0; i < snake.body.size(); i++)
+    //     ofs << "{" << snake.body[i].x << "," << snake.body[i].y << "}";
+
+    // ofs << ")," << board.score << "," << board.level << endl;
+
+    ofs.close();
+}
+
+void pauseGame()
+{
+    for (int i = 0; i < 20; i++)
+    {
+        gotoxy(20, i);
+        for (int j = 0; j < 50; j++)
+        {    
+                TextColor(227);
+                cout << " ";
+        }
+        cout << endl;
+    }
+    TextColor(14);
+    gotoxy(20, 0);
+    cout << "Press (Z) to save file, or press WASD to continue.";
+    gotoxy(20, 1);
+    cout << "Press (X) to save file, or press WASD to continue.";
+}
+
+int getDirection(Snake snake, bool isPausing, Board board, User user)
 {
     int direct = snake.direction;
     if (kbhit()) // Kiem tra nhan keyboard
     {
         char key = getch(); // Lay key
 
-        if (toupper(key) == 'A' || key == 75) // Di chuyển trái
-            if (direct != 1)
-                direct = 0;
-        if (toupper(key) == 'D' || key == 77) // Di chuyển phải
-            if (direct != 0)
-                direct = 1;
-        if (toupper(key) == 'W' || key == 72) // Di chuyển lên
-            if (direct != 3)
-                direct = 2;
-        if (toupper(key) == 'S' || key == 80) // Di chuyển xuống
-            if (direct != 2)
-                direct = 3;
+        if (tolower(key) != 'p')
+        {
+            if (toupper(key) == 'Z')
+                saveFiles(snake, board, user);
+            if (toupper(key) == 'A' || key == 75) // Di chuyển trái
+                if (direct != 1)
+                    direct = 0; 
+            if (toupper(key) == 'D' || key == 77) // Di chuyển phải
+                if (direct != 0)
+                    direct = 1;
+            if (toupper(key) == 'W' || key == 72) // Di chuyển lên
+                if (direct != 3)
+                    direct = 2;
+            if (toupper(key) == 'S' || key == 80) // Di chuyển xuống
+                if (direct != 2)
+                    direct = 3;
+        }
+        if (tolower(key) == 'p' && !isPausing) // Nhấn p để pause game
+        {
+            direct = 112;
+            pauseGame();
+        }
     }
     return direct;
 }
 
 void updateBoard(Board &board)
 {
+    for (int i = 0; i < board.gate.size(); i++)
+    {
+        int I = board.gate[i].f.f, J = board.gate[i].f.s;
+        if(board.viewBoard[I][J]!=0)
+            return;
+    }
     for (int i = 0; i < board.gate.size(); i++)
     {
         int I = board.gate[i].f.f, J = board.gate[i].f.s;
@@ -271,7 +456,7 @@ void move(Snake &snake, Board &board)
     if (board.viewBoard[snake.head.y][snake.head.x] == 1 || board.viewBoard[snake.head.y][snake.head.x] == 2 || board.viewBoard[snake.head.y][snake.head.x] <= -1)
         return void(board.game_active = false);
 
-    // 251 - 273: Teloport Gate
+    // Teloport Gate
     if (board.viewBoard[snake.head.y][snake.head.x] == 29)
         return void(board.game_active = false);
     if (board.viewBoard[snake.head.y][snake.head.x] >= 30 && board.viewBoard[snake.head.y][snake.head.x] <= 33)
@@ -403,7 +588,7 @@ bool outRangeGate(int y, int x, const Board board)
 {
     int sz = board.gate.size();
     int minX = board.gate[0].f.s, minY = board.gate[0].f.f;
-    int maxX = board.gate[sz - 1].f.s, maxY = board.gate[sz - 1].f.s; // sua lai tu .f.s -> .f.f
+    int maxX = board.gate[sz - 1].f.s, maxY = board.gate[sz - 1].f.f; // sua lai tu .f.s -> .f.f
     if (y >= minY - 1 && y <= maxY + 1)
         if (x >= minX - 1 && x <= maxX + 1)
             return false;
@@ -500,26 +685,34 @@ void deleteObj(Snake &snake, Board &board)
     board.gate.clear();
 }
 
-void process(Snake &snake, Board &board)
+void process(Snake &snake, Board &board, User user)
 {
     int preS = board.ss;
+    bool isPausing = false;
+
     while (board.game_active)
     {
-        snake.direction = getDirection(snake);
-        move(snake, board);
-        if (!board.game_active || board.isWin)
-            break;
-        draw(snake, board);
-        snake.turnRed = false;
-        if (secondPassed(board.hh, board.mm, board.ss, preS, board.score) % frequencyOfApple == 0)
-            if (snake.body.size() >= 3 * numToSpawnBigApple / 2 && snake.body.size() % numToSpawnBigApple == 0 && !board.haveBigApple)
-                spawnApple(board, 1);
-            else
-                spawnApple(board, 0);
-        if (!board.score)
-            break;
-        eatAndGrown(snake, board);
-        cout << board.score << " / " << board.scoreToPass << "  " << endl;
+        snake.direction = getDirection(snake, isPausing, board, user);
+        if (snake.direction != 112)
+        {
+            isPausing = false;
+            move(snake, board);
+            if (!board.game_active || board.isWin)
+                break;
+            draw(snake, board);
+            snake.turnRed = false;
+            if (secondPassed(board.hh, board.mm, board.ss, preS, board.score) % frequencyOfApple == 0)
+                if (snake.body.size() >= 3 * numToSpawnBigApple / 2 && snake.body.size() % numToSpawnBigApple == 0 && !board.haveBigApple)
+                    spawnApple(board, 1);
+                else
+                    spawnApple(board, 0);
+            if (!board.score)
+                break;
+            eatAndGrown(snake, board);
+            cout << board.score << " / " << board.scoreToPass << "  " << endl;
+        }
+        else
+            isPausing = true;
     }
     // system("cls");
     // gotoxy(5, 5);
@@ -536,8 +729,20 @@ int main()
     srand(time(0));
     Board board;
     Snake snake;
+
+    displayFiles();
+    User user;
+    cout << "Nhap ten FILE: "; getline(cin, user.fileName);
+
     set_cursor(false);
-    init(snake, board);
-    process(snake, board);
+    board.level = 1;
+    while (true)
+    {
+        system("cls");
+        init(snake, board);
+        process(snake, board, user);
+        if (board.isWin)
+            board.level ++;
+    }
     return 0;
 }
