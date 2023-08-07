@@ -64,6 +64,7 @@ void printAccChoice(int Choice)
             //clear old boxs
             deleteChoiceBox(directX, directY + 4);
             deleteChoiceBox(directX, directY + 8);
+            deleteChoiceBox(directX, directY + 12);
 
             gotoxy(directX - 5, directY);
             TextColor(BlackW);
@@ -76,8 +77,12 @@ void printAccChoice(int Choice)
             TextColor(RW);
             gotoxy(directX, directY + 4);
             cout << "   Log In        " << endl;
+            
             gotoxy(directX, directY + 8);
             cout << "   Sign Up       " << endl;
+            
+            gotoxy(directX, directY + 12);
+            cout << "    Quit        " << endl;
             break;
         }
         case 2:
@@ -85,11 +90,12 @@ void printAccChoice(int Choice)
             //clear old boxs
             deleteChoiceBox(directX, directY);
             deleteChoiceBox(directX, directY + 8);
+            deleteChoiceBox(directX, directY + 12);
 
             gotoxy(directX - 3, directY);
             cout << "   Play as Guest       " << endl;
             gotoxy(directX - 6, directY + 1);
-            cout << "                      " << endl;
+            cout << "                       " << endl;
             
             gotoxy(directX - 2, directY + 4);
             TextColor(BlackW);
@@ -100,6 +106,9 @@ void printAccChoice(int Choice)
             TextColor(RW);
             gotoxy(directX, directY + 8);
             cout << "   Sign Up            " << endl;
+            
+            gotoxy(directX, directY + 12);
+            cout << "    Quit        " << endl;
             break;
         }
         case 3:
@@ -107,12 +116,13 @@ void printAccChoice(int Choice)
             //clear old boxs
             deleteChoiceBox(directX, directY);
             deleteChoiceBox(directX, directY + 4);
+            deleteChoiceBox(directX, directY + 12);
 
             gotoxy(directX - 3, directY);
-            cout << "   Play as Guest           "<< endl;
+            cout << "   Play as Guest       " << endl;
             gotoxy(directX - 6, directY + 1);
-            cout << "                      " << endl;
-
+            cout << "                       " << endl;
+            
             gotoxy(directX, directY + 4);
             cout << "   Log In               " << endl;
     
@@ -122,6 +132,35 @@ void printAccChoice(int Choice)
             printChoiceBox(directX, directY + 8);
             //244 = 15*16 + 4 red text white background
             TextColor(RW);
+            
+            gotoxy(directX, directY + 12);
+            cout << "    Quit        " << endl;
+            break;
+        }
+		case 4:
+        {
+            //clear old boxs
+            deleteChoiceBox(directX, directY);
+            deleteChoiceBox(directX, directY + 4);
+            deleteChoiceBox(directX, directY + 8);
+
+            gotoxy(directX - 5, directY);
+            TextColor(RW);
+            gotoxy(directX - 3, directY);
+            cout << "   Play as Guest       " << endl;
+            gotoxy(directX - 6, directY + 1);
+            cout << "                       " << endl;
+
+            gotoxy(directX, directY + 4);
+            cout << "   Log In        " << endl;
+            
+            gotoxy(directX, directY + 8);
+            cout << "   Sign Up       " << endl;
+            
+            TextColor(BlackW);
+            gotoxy(directX, directY + 12);
+            cout << " << Quit >>     " << endl;
+            printChoiceBox(directX, directY + 12);
             break;
         }
     }
@@ -137,14 +176,14 @@ void selectAccChoice(int &roundSelect, int &Choice)
         {
             Choice--;
             if (Choice == 0)
-            Choice = 3;
+            	Choice = 4;
             break;                  
         }
         case KeyDown:   //point to below choice
         {
             Choice++;
-            if (Choice == 4)
-            Choice = 1;
+            if (Choice == 5)
+            	Choice = 1;
             break;
         }        
         case Space:     //accept choice
@@ -160,6 +199,10 @@ void selectAccChoice(int &roundSelect, int &Choice)
             else if (Choice == 3)
             {
                 roundSelect = 2;
+            }
+            else if (Choice == 4)
+            {
+                exit(0);
             }
             break;
         }
