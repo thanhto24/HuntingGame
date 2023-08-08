@@ -11,7 +11,7 @@ const int backgroundColor = 114;
 const int teleportGateColor = 176;
 const int landMineColor = 16;
 
-void generateMenu (mainScreen &game, int &roundSelect, int Choice, string FileName)
+void generateMenu (int &roundSelect, int Choice, string FileName)
 {
     roundSelect = 1;
     int directX = 85, directY = 19;
@@ -31,11 +31,11 @@ void generateMenu (mainScreen &game, int &roundSelect, int Choice, string FileNa
         if (roundSelect < 0)
             break;
         printMenu(roundSelect, Choice, FileName);
-        getEvents(game, roundSelect, Choice);
+        getEvents(roundSelect, Choice);
     }
 }
 
-void getEvents(mainScreen &game, int &roundSelect, int &Choice)
+void getEvents(int &roundSelect, int &Choice)
 {
     char button = getch();
     switch (roundSelect)
@@ -66,9 +66,10 @@ void getEvents(mainScreen &game, int &roundSelect, int &Choice)
                 {
                     if (Choice == 1)
                     {
-                        //go to difficulty options screen
+                        /*//go to difficulty options screen
                         roundSelect = 2;
-                        Choice = 1;
+                        Choice = 1;*/
+                        roundSelect = -1;
                     }
                     else if (Choice == 2)
                     {
@@ -95,7 +96,7 @@ void getEvents(mainScreen &game, int &roundSelect, int &Choice)
         break;
         }
         //Screen where choosing game difficulty
-        case 2:
+        /*case 2:
         {
             switch(button)
             {
@@ -119,22 +120,16 @@ void getEvents(mainScreen &game, int &roundSelect, int &Choice)
                     {
                         case (1):
                         {
-                            game.row = 8;
-                            game.col = 20;
                             roundSelect = -1;        
                             break;
                         }
                         case (2):
                         {
-                            game.row = 8;
-                            game.col = 20;
                             roundSelect = -2;
                             break;
                         }
                         case (3):
                         {
-                            game.row = 8;
-                            game.col = 20;
                             roundSelect = -3;
                             break;
                         }
@@ -149,7 +144,7 @@ void getEvents(mainScreen &game, int &roundSelect, int &Choice)
                 }
             }
         break;
-        }
+        }*/
         case 3: case 4:
         {
             if (button == Esc)
@@ -194,6 +189,7 @@ void printMenu(int roundSelect, int Choice, string FileName)
 			    //242 = 15*16 + 2 green text white background
 			    TextColor(GreenW);
                 cout << "   << Play >>    " << endl;
+                TextColor(boxColor);
                 printMenuBox (directX - 2, directY - 2);
                 gotoxy(directX - 4, 22);
 			    //244 = 15*16 + 4 red text white background
@@ -213,12 +209,13 @@ void printMenu(int roundSelect, int Choice, string FileName)
                 deleteMenuBox(directX - 2, directY + 6);
                 deleteMenuBox(directX - 2, directY + 8);
 
+				TextColor(RW);
                 gotoxy(directX - 4, 18);
                 cout << "      Play       " << endl;
 
-			    //242 = 15*16 + 2 green text white background
-			    TextColor(GreenW);
+			    TextColor(boxColor);
                 printMenuBox (directX - 2, directY + 2);
+			    TextColor(GreenW);
                 gotoxy(directX - 4, 22);
                 cout << "<< LeaderBoard >>  " << endl;
 
@@ -236,16 +233,17 @@ void printMenu(int roundSelect, int Choice, string FileName)
                 deleteMenuBox(directX - 2, directY - 2);
                 deleteMenuBox(directX - 2, directY + 2);
                 deleteMenuBox(directX - 2, directY + 10);
-
+				
+				TextColor(RW);
                 gotoxy(directX - 4, 18);
                 cout << "      Play       " << endl;
 
                 gotoxy(directX - 4, 22);
                 cout << "   LeaderBoard   " << endl;
 
-			    //242 = 15*16 + 2 green text white background
-			    TextColor(GreenW);
+			    TextColor(boxColor);
                 printMenuBox (directX - 2, directY + 6);
+			    TextColor(GreenW);
                 gotoxy(directX - 4, 26);
                 
                 cout << "  << Credit >>    " << endl;
@@ -260,7 +258,8 @@ void printMenu(int roundSelect, int Choice, string FileName)
                 //delete old boxs
                 for (int i = 0; i < 4; i++)
                     deleteMenuBox(directX - 2, directY - 2 + i*4);
-                gotoxy(directX - 4, 18);
+                TextColor(RW);
+				gotoxy(directX - 4, 18);
                 cout << "      Play        " << endl;
 
                 gotoxy(directX - 4, 22);
@@ -269,9 +268,9 @@ void printMenu(int roundSelect, int Choice, string FileName)
                 gotoxy(directX - 4, 26);
                 cout << "     Credit       " << endl;
 
-			    //242 = 15*16 + 2 green text white background
-			    TextColor(GreenW);
+			    TextColor(boxColor);
                 printMenuBox (directX - 2, directY + 10);
+			    TextColor(GreenW);
                 gotoxy(directX - 4, 30);
                 cout << "   << Quit >>      " << endl;
 
@@ -280,7 +279,7 @@ void printMenu(int roundSelect, int Choice, string FileName)
             }
             break;
         }
-        case 2:
+        /*case 2:
         {
             gotoxy(directX - 4, 30);
             cout << "                   " << endl;
@@ -345,11 +344,11 @@ void printMenu(int roundSelect, int Choice, string FileName)
                 printMenuBox(directX - 2, directY + 6);
             }
             break;
-        }
+        }*/
         case 3:
         {
             clearScreen();
-            //printCredit();
+            printCredit();
             break;
         }
         case 4:
@@ -366,30 +365,31 @@ void printCredit()
 {
     int directX = 85, directY = 19;
     gotoxy(0, 12);
-    //241 = 15*16 + 1 blue text white background
-    TextColor(241);
+    //242 = 15*16 + 2 green text white background
+    TextColor(242);
     cout << "\t\t\t\t\t\t\t        ____                     _   _   _             \n"; 
     cout << "\t\t\t\t\t\t\t       / ___|  _ __    ___    __| | (_) | |_   ___    \n"; 
     cout << "\t\t\t\t\t\t\t      | |     | '__|  / _ `  / _` | | | | __| / __|   \n"; 
     cout << "\t\t\t\t\t\t\t      | |___  | |    |  __/ | (_| | | | | |_ .\\__ \\   \n"; 
     cout << "\t\t\t\t\t\t\t       `____| |_|     `___|  `__,_| |_| '__./ |___/   \n\n"; 
 
-    cout << "\t\t\t\t\t\t\t\t\t\t Pikachu Game \n";
-    cout << "\t\t\t\t\t\t\t\t Programming Technique's Course Project \n";
+    cout << "\t\t\t\t\t\t\t\t\t       Hunting Game \n";
+    cout << "\t\t\t\t\t\t\t\t Programming Technique's Course Project \n\n";
     //241 = 15*16 + 1 blue text white background
     TextColor(241);
     cout << "\t\t\t\t\t\t\t\t Programmed and Designed by \n";
     cout << "\t\t\t\t\t\t\t\t" << left << setw(30) << " Ngo Van Khai" << setfill(' ')  << "22127174 \n";
-    cout << "\t\t\t\t\t\t\t\t" << left << setw(30) << " Nguyen Quoc Tin" << setfill(' ')  << "22127416 \n";
+    cout << "\t\t\t\t\t\t\t\t" << left << setw(30) << " Le Phuoc Phat" << setfill(' ')  << "22127322 \n";
+    cout << "\t\t\t\t\t\t\t\t" << left << setw(30) << " To Quoc Thanh" << setfill(' ')  << "22127388 \n";
+    cout << "\t\t\t\t\t\t\t\t" << left << setw(30) << " Thai Huyen Tung" << setfill(' ')  << "22127441 \n";
     
     //241 = 15*16 + 1 blue text white background
     TextColor(241);
-    cout << "\t\t\t\t\t\t\t   This is our first game. Hope you have good experience\n";
-    cout << "\t\t\t\t\t\t\t\t\t\t Thank you!!";
+    cout << "\t\t\t\t\t\t\t\t\t  Thank you for playing!!";
     gotoxy(directX - 8, directY + 10);
     //241 = 15*16 + 1 blue text white background
     TextColor(241);
-    cout << " Press ESC to exit";
+    cout << "Press ESC to exit";
 
     //241 = 15*16 + 1 blue text white background
     TextColor(241);
@@ -422,7 +422,7 @@ int main(){
         accountLogedIn = false;
 	while(1){
         int scoreWhenOutGame = 0;
-    	generateMenu(game, roundSelect, Choice, FileName);
+    	generateMenu(roundSelect, Choice, FileName);
 	}
 	return 0;
 }

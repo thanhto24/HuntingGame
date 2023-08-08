@@ -58,6 +58,7 @@ const int RW = 244;
 const int GreenW = 242;
 //240 = 15*16 + 0 black text white background
 const int BlackW = 240;
+const int boxColor = 2*16+ 15;
 #include "showing.cpp"
 #include "account.cpp"
 #include "printDesign.cpp"
