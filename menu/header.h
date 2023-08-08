@@ -46,10 +46,16 @@ struct Player
     State savedStage; 
 };
 
-struct mainScreen{
-    int row;
-    int col;
-    int **board;
+struct User
+{
+    string fileName;
+    vector<pair<int, int>> bodyOfSnake;
+    int points;
+    int level;
+    int record;
+    char account[99];
+    char password[99];
+    // char fileName[99];
 };
 
 //244 = 15*16 + 4 red text white background
@@ -59,6 +65,7 @@ const int GreenW = 242;
 //240 = 15*16 + 0 black text white background
 const int BlackW = 240;
 const int boxColor = 2*16+ 15;
+const int titleColor = 2*16 + 15;
 #include "showing.cpp"
 #include "account.cpp"
 #include "printDesign.cpp"

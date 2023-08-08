@@ -162,14 +162,8 @@ void printMenu(int roundSelect, int Choice, string FileName)
 {
     //241 = 15*16 + 1 blue text white background
     TextColor(BlackW);
-    int directX = 83, directY = 19;
-    gotoxy(0,9);
-    cout << "\t\t\t\t\t\t\t\t __________  .__   __                       .__            "<< endl;                                                                                                                                                                               
-    cout << "\t\t\t\t\t\t\t\t \\______   \\ |__| |  | __ _____      ____   |  |__    __ __ "<< endl;                                                                                                                                                                               
-    cout << "\t\t\t\t\t\t\t\t  |     ___/ |  | |  |/ / \\__  \\   _/ ___\\  |  |  \\  |  |  \\"<< endl;                                                                                                                                                                               
-    cout << "\t\t\t\t\t\t\t\t  |    |     |  | |    <   / __ \\_ \\  \\___  |   Y  \\ |  |  /"<< endl;
-    cout << "\t\t\t\t\t\t\t\t  |____|     |__| |__|_ \\ /____  /  \\___  > |___|  / |____/ "<< endl;
-    cout << "\t\t\t\t\t\t\t\t                       \\/      \\/       \\/       \\/        "<< endl;
+    int directX = 86, directY = 19;
+    title();
 	//242 = 15*16 + 1 green text white background
 	TextColor(GreenW);
 
@@ -399,11 +393,8 @@ int main(){
 	
     int roundSelect = 1, Choice = 1;
     int *pChoice = &Choice;
-    Player user;
+    User user;
     bool accountLogedIn = true;
-    mainScreen game;
-    game.col = 0;
-    game.row = 0;
     string FileName = "SaveFile.dat";
     unsigned int index = 0;
 

@@ -3,6 +3,7 @@
 //#include "FormatScreens.h"
 
 //functions for showing Menu Choice box
+void title();
 void printSignUpBoard(int directX, int directY);
 void printSignInBoard(int directX, int directY);
 void printChoiceBox(int directX, int directY);

@@ -1,5 +1,18 @@
 #include "printDesign.h"
 
+void title(){
+	ifstream ifs("title.txt");
+	int row = 6, col = 28;
+	string temp;
+	while(!ifs.eof()){
+		getline(ifs, temp, '\n');
+		gotoxy(col, row++);
+		TextColor(GreenW);
+		cout << temp;
+	}
+	ifs.close();
+}
+
 void printSignUpBoard(int directX, int directY)
 {
     //upper board
