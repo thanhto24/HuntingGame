@@ -1,6 +1,13 @@
 #pragma once
 #include "header.h"
-//#include "FormatScreens.h"
+
+//functions used to design screen
+HWND WINAPI GetConsoleWindowNT(void);
+void DisableResizeWindow();
+void ShowScrollbar(BOOL Show);
+void clearScreen();
+void gotoxy(SHORT x, SHORT y);
+void TextColor(int color);
 
 //functions for showing Menu Choice box
 void title();

@@ -15,6 +15,7 @@
 #include <windows.h>
 #include <mmsystem.h>
 
+#pragma pack (1)
 #pragma comment(lib, "winmm.lib")
 
 using namespace std;
@@ -40,10 +41,10 @@ struct State
 
 struct Player
 {
-    char username[17];          //17bytes
-    char password[15];          //15bytes
-    int record;                 //score(4bytes)
-    State savedStage; 
+    char account[20];          //20bytes
+    char password[20];          //20bytes
+    //int record;                 //score(4bytes)
+    //State savedStage; 
 };
 
 struct User
@@ -53,8 +54,7 @@ struct User
     int points;
     int level;
     int record;
-    char account[99];
-    char password[99];
+	Player player;
     // char fileName[99];
 };
 
@@ -66,6 +66,6 @@ const int GreenW = 242;
 const int BlackW = 240;
 const int boxColor = 2*16+ 15;
 const int titleColor = 2*16 + 15;
-#include "showing.cpp"
 #include "account.cpp"
 #include "printDesign.cpp"
+
