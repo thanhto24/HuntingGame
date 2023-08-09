@@ -70,12 +70,13 @@ void clearScreen(){
 }
 
 //https://nguyenvanquan7826.wordpress.com/2013/08/22/cc-gotoxy-trong-dev-c-gotoxy-in-dev-c/
-void gotoxy(SHORT x, SHORT y){//y: row, x: col
-    static HANDLE h = NULL;  
-    if(!h)
+void gotoxy(int x, int y)
+{
+    static HANDLE h = NULL;
+    if (!h)
         h = GetStdHandle(STD_OUTPUT_HANDLE);
-    COORD c = { x, y };
-    SetConsoleCursorPosition(h,c);
+    COORD c = {x, y};
+    SetConsoleCursorPosition(h, c);
 }
 
 //https://www.codespeedy.com/color-text-output-in-console-in-cpp/

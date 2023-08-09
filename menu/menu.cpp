@@ -13,6 +13,7 @@ const int landMineColor = 16;
 
 void generateMenu (int &roundSelect, int Choice, string FileName)
 {
+	cout << 1111111 << endl;
     roundSelect = 1;
     int directX = 85, directY = 19;
 
@@ -22,10 +23,10 @@ void generateMenu (int &roundSelect, int Choice, string FileName)
     {
         //240 = 15*16 + 0 black text white background
         TextColor(BlackW);
-        gotoxy(79, 38);
-        cout << "Use arrow key to move.";
-        gotoxy(78, 39);
-        cout << "Press SPACE for choosing.";
+//        gotoxy(79, 38);
+//        cout << "Use arrow key to move.";
+//        gotoxy(78, 39);
+//        cout << "Press SPACE for choosing.";
 
         //out while loop
         if (roundSelect < 0)
@@ -399,15 +400,15 @@ int main(){
     unsigned int index = 0;
 
     HWND hWnd=GetConsoleWindowNT();
-    MoveWindow(hWnd, 0, 0, 1450, 760,TRUE);
+    MoveWindow(hWnd, 0, 0, 1000, 600,TRUE);
     ShowScrollbar(0);
     DisableResizeWindow();
     system("color f0");
     TextColor(BlackW);
-    gotoxy(79, 38);
-    cout << "Use arrow key to move.";
-    gotoxy(78, 39);
-    cout << "Press SPACE for choosing.";
+//    gotoxy(79, 38);
+//    cout << "Use arrow key to move.";
+//    gotoxy(78, 39);
+//    cout << "Press SPACE for choosing.";
     generateAccScreen(roundSelect, Choice, FileName, user, index);
     if(roundSelect == -1)
         accountLogedIn = false;
