@@ -27,7 +27,7 @@ using namespace std;
 // 00 09 09 09 09 00
 // 00 00 00 00 00 00
 
-const char MSSV[] = " 174322388441";
+const char MSSV[] = " 22127174221273222212738822127441";
 
 void FixConsoleWindow()
 {
@@ -79,7 +79,7 @@ struct Snake
     Point head, tail;
     int direction;
     bool feed;
-    bool turnRed;
+    bool turnRed = false;
 };
 
 struct Board
@@ -102,9 +102,11 @@ struct Board
 struct User
 {
     string fileName;
-    vector<pair<int, int>> bodyOfSnake;
+    // vector<pair<int, int>> bodyOfSnake;
+    vector<Point> bodyOfSnake;
     int points;
     int level;
+    int direct;
     // char account[99];
     // char password[99];
     // char fileName[99];
@@ -142,7 +144,47 @@ string intToString(int x)
     return res;
 }
 
-void init(Snake &snake, Board &board)
+User getUser(string line)
+{
+    User user;
+    stringstream s(line);
+    string buf;
+
+    getline(s, buf, ',');
+    user.fileName = buf;
+
+    getline(s, buf, '(');
+    getline(s, buf, ')');
+    string coordinates = buf;
+    stringstream _s(coordinates);
+    int len = coordinates.length();
+
+    Point temp;
+    while (len)
+    {
+        getline(_s, buf, '{'); len--;
+        getline(_s, buf, ','); len --; len -= buf.length();
+        temp.x = atoi(buf.c_str());
+        getline(_s, buf, '}'); len --; len -= buf.length();
+        temp.y = atoi(buf.c_str());
+        user.bodyOfSnake.push_back(temp);
+        temp = {0, 0};
+    }
+
+    getline(s, buf, ',');
+    getline(s, buf, ',');
+    user.points = atoi(buf.c_str());
+
+    getline(s, buf, ',');
+    user.level = atoi(buf.c_str());
+
+    getline(s, buf, '\n');
+    user.direct = atoi(buf.c_str());
+
+    return user;
+}
+
+void init(Snake &snake, Board &board, Point startPoint, int Direct)
 {
     Point spawnPoint;
     string address = "Level/";
@@ -160,8 +202,23 @@ void init(Snake &snake, Board &board)
             fin >> board.viewBoard[i][j];
             if (board.viewBoard[i][j] >= 3 && board.viewBoard[i][j] <= 6)
             {
-                setValue(spawnPoint, mp(i, j));
-                snake.direction = board.viewBoard[i][j] - 3;
+                if (startPoint.x != -1 && startPoint.y != -1)
+                {
+                    snake.direction = Direct;
+                    if (Direct == 0)
+                        setValue(spawnPoint, mp(startPoint.y, startPoint.x + 1));
+                    else if (Direct == 1)
+                        setValue(spawnPoint, mp(startPoint.y, startPoint.x - 1));
+                    else if (Direct == 2)
+                        setValue(spawnPoint, mp(startPoint.y + 1, startPoint.x));
+                    else if (Direct == 3)
+                        setValue(spawnPoint, mp(startPoint.y - 1, startPoint.x));
+                }
+                else
+                {
+                    setValue(spawnPoint, mp(i, j));
+                    snake.direction = board.viewBoard[i][j] - 3;
+                }
             }
             if (board.viewBoard[i][j] >= 9 && board.viewBoard[i][j] <= 13)
             {
@@ -215,48 +272,7 @@ void init(Snake &snake, Board &board)
     board.updated = false;
 }
 
-User getUser(string line)
-{
-    User user;
-    stringstream s(line);
-    string buf;
-
-    getline(s, buf, ',');
-    user.fileName = buf;
-
-    getline(s, buf, '(');
-    getline(s, buf, ')');
-    string coordinates = buf;
-    stringstream _s(coordinates);
-    int len = coordinates.length();
-
-    pair<int, int> temp;
-    while (len)
-    {
-        getline(_s, buf, '{'); len--;
-        getline(_s, buf, ','); len --; len -= buf.length();
-        stringstream t1(buf); t1 >> temp.first;
-        // temp.first = stoi(buf);
-        getline(_s, buf, '}'); len --; len -= buf.length();
-        stringstream t2(buf); t2 >> temp.second;
-        // temp.second = stoi(buf);
-        user.bodyOfSnake.push_back(temp);
-        temp = {0, 0};
-    }
-
-    getline(s, buf, ',');
-    getline(s, buf, ',');
-    stringstream t1(buf); t1 >> user.points;
-    // user.points = stoi(buf);
-
-    getline(s, buf, '\n');
-    stringstream t2(buf); t2 >> user.level;
-    // user.level = stoi(buf);
-
-    return user;
-}
-
-void displayFiles()
+vector<User> displayFiles()
 {
     ifstream ifs("out.txt");
     vector<User> users;
@@ -264,7 +280,7 @@ void displayFiles()
     if (ifs.fail())
     {
         cout << "Error opening file: out,txt" << endl;
-        return;
+        return users;
     }
     if (!ifs.eof())
     {
@@ -273,8 +289,9 @@ void displayFiles()
             users.push_back(getUser(line));
     }
     for (int i = 0; i < users.size(); i++)
-        cout << "FILE NAME: " << users[i].fileName << " - Scores: " << users[i].points << " - Level: " << users[i].level << endl;
+        cout << "PLAYER NAME: " << users[i].fileName << " - Scores: " << users[i].points << " - Level: " << users[i].level << endl;
     ifs.close();
+    return users;
 }
 
 void saveFiles(Snake snake, Board board, User user)
@@ -334,24 +351,17 @@ void saveFiles(Snake snake, Board board, User user)
             for (int i = 0; i < snake.body.size(); i++)
                 ofs << "{" << snake.body[i].x << "," << snake.body[i].y << "}";
 
-            ofs << ")," << board.score << "," << board.level << endl;
+            ofs << ")," << board.score << "," << board.level << "," << snake.direction << endl;
         }
     }
-
-    // ofs << user.fileName << ",(";
-    // for (int i = 0; i < snake.body.size(); i++)
-    //     ofs << "{" << snake.body[i].x << "," << snake.body[i].y << "}";
-
-    // ofs << ")," << board.score << "," << board.level << endl;
-
     ofs.close();
 }
 
 void pauseGame()
 {
-    for (int i = 0; i < 20; i++)
+    for (int i = 0; i < 16; i++)
     {
-        gotoxy(20, i);
+        gotoxy(20, i + 2);
         for (int j = 0; j < 50; j++)
         {    
                 TextColor(227);
@@ -360,10 +370,10 @@ void pauseGame()
         cout << endl;
     }
     TextColor(14);
-    gotoxy(20, 0);
+    gotoxy(20, 2);
     cout << "Press (Z) to save file, or press WASD to continue.";
-    gotoxy(20, 1);
-    cout << "Press (X) to save file, or press WASD to continue.";
+    // gotoxy(20, 3);
+    // cout << "Press (X) to save file, or press WASD to continue.";
 }
 
 int getDirection(Snake snake, bool isPausing, Board board, User user)
@@ -375,8 +385,6 @@ int getDirection(Snake snake, bool isPausing, Board board, User user)
 
         if (tolower(key) != 'p')
         {
-            if (toupper(key) == 'Z')
-                saveFiles(snake, board, user);
             if (toupper(key) == 'A' || key == 75) // Di chuyển trái
                 if (direct != 1)
                     direct = 0; 
@@ -392,8 +400,11 @@ int getDirection(Snake snake, bool isPausing, Board board, User user)
         }
         if (tolower(key) == 'p' && !isPausing) // Nhấn p để pause game
         {
-            direct = 112;
             pauseGame();
+            char _key = getch();
+            if (toupper(_key) == 'Z')
+                saveFiles(snake, board, user);
+            direct = 112;
         }
     }
     return direct;
@@ -730,16 +741,47 @@ int main()
     Board board;
     Snake snake;
 
-    displayFiles();
+    bool isNewUser = true;
+    Point startPoint = {-1,  -1};
+    vector<User> users = displayFiles();
     User user;
     cout << "Nhap ten FILE: "; getline(cin, user.fileName);
 
     set_cursor(false);
-    board.level = 1;
+
+    ifstream ifs("out.txt");
+    if (ifs.fail())
+        return 0;
+    else 
+    {
+        int n = users.size();
+        for (int i = 0; i < n; i++)
+        {
+            if (user.fileName == users[i].fileName)
+            {
+                isNewUser = false;
+                user = users[i];
+                break;
+            }
+        }
+        if (!isNewUser)
+        {
+            board.level = user.level;
+            board.score = user.points;
+            snake.head = user.bodyOfSnake[0];
+            user.bodyOfSnake.erase(user.bodyOfSnake.begin());
+            snake.body = user.bodyOfSnake;
+            startPoint = snake.head;
+        }
+        else
+            board.level = 1;
+        ifs.close();    
+    }
+
     while (true)
     {
         system("cls");
-        init(snake, board);
+        init(snake, board, startPoint, user.direct);
         process(snake, board, user);
         if (board.isWin)
             board.level ++;
