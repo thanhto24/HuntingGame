@@ -3,8 +3,8 @@
 #include "header.h"
 
 //Small Function
-bool isExistAcc(string FileName, char username[17], unsigned int &index); //Check if account exists
-bool isPasswordCorrect(string FileName, char password[15], unsigned int index);     //Check Password
+bool isExistAcc(string FileName, char username[99], unsigned int &index); //Check if account exists
+bool isPasswordCorrect(string FileName, char password[99], unsigned int index);     //Check Password
 void getInfo(string FileName, User &oldMan, unsigned int index);
 //Big Function
 void signUp(string FileName);  // sign up new account

@@ -3,9 +3,7 @@
 void generateAccScreen(int &roundSelect, int Choice, string FileName, User &oldMan, unsigned int &index)
 {
     roundSelect = 0;
-
 	TextColor(BlackW);
-
     while(true)
     {
     	TextColor(BlackW);
@@ -217,7 +215,7 @@ void signUp(string FileName)
     User newguy;
     unsigned index = 0;
     int directX = 85, directY = 10;
-    char confirm[17];           //check if user type wrong letter
+    char confirm[20];           //check if user type wrong letter
     TextColor(BlackW);
     printSignUpBoard(directX, directY);
 
@@ -240,24 +238,24 @@ void signUp(string FileName)
     //4 = 0*16 + 4 red text black background
     TextColor(RW);
     gotoxy(directX - 8, directY + 15);
-    cout << "Username must be LESS than 16 characters";
+    //cout << "Username must be LESS than 16 characters";
     gotoxy(directX - 8, directY + 16);
-    cout << "Password is NO MORE THAN 14 characters";
+    //cout << "Password is NO MORE THAN 14 characters";
 
     //244 = 15*16 + 4 red text white background
     TextColor(RW);
     //get Username and Password
     gotoxy(directX + 10, directY + 3);
-    cin.getline (newguy.account, 17);
+    cin.getline (newguy.player.account, 17);
 
     gotoxy(directX + 10, directY + 7);
-    cin.getline (newguy.password, 15);
+    cin.getline (newguy.player.password, 15);
 
     gotoxy(directX + 10,directY + 11);
     cin.getline (confirm, 15);
 
     //check if the username exists,
-    bool valid = isExistAcc(FileName, newguy.account, index);
+    bool valid = isExistAcc(FileName, newguy.player.account, index);
     if (valid)
     {
         //4 = 0*16 + 4 red text black background
@@ -270,7 +268,7 @@ void signUp(string FileName)
         clearScreen();
         signUp(FileName);           //username is used then user need to type new username
     }
-    else if (strcmp(confirm, newguy.password) != 0)     // check if confirm password is different from password
+    else if (strcmp(confirm, newguy.player.password) != 0)     // check if confirm password is different from password
     {
         gotoxy(directX, directY + 22);
         TextColor(RW);
@@ -286,26 +284,26 @@ void signUp(string FileName)
         cout << "Welcome New Player             ";     // sign up successfully
         Sleep(2000);
         clearScreen();
-    }
-    
-    // open file to store new user's account
-    ofstream fout(FileName, ios::binary|ios::app);
-    if (!fout.is_open())
-    {
-        cout << "Error While Opening";
-        exit(0);
-    }
-
-    //New Account store nothing exept username and password
-    newguy.record = 0;
-
-    // Storing info in binary file
-    fout.seekp(0, ios::end);
-    fout.write(newguy.account, 17);
-    fout.write(newguy.password, 15);
-    fout.write((char*) &newguy.record, sizeof(unsigned int));
-
-    fout.close();
+	    
+	    // open file to store new user's account
+	    ofstream fout(FileName, ios::binary|ios::app);
+	    if (!fout.is_open())
+	    {
+	        cout << "Error While Opening";
+	        exit(0);
+	    }
+	
+	    //New Account store nothing exept username and password
+	    newguy.record = 0;
+	
+	    // Storing info in binary file
+	    fout.seekp(0, ios::end);
+	    fout.write(newguy.player.account, 20);
+	    fout.write(newguy.player.password, 20);
+	    //fout.write('\n', 1);
+	    //fout.write((char*) &newguy.record, sizeof(unsigned int));
+		fout.close();
+	}
 }
 
 void signIn(string FileName, User &oldMan, unsigned int &index)
@@ -326,14 +324,14 @@ void signIn(string FileName, User &oldMan, unsigned int &index)
     cout << "Password " << endl;   //(no more than 14 characters)
 
     gotoxy(directX + 10, directY + 3);
-    cin.getline(oldMan.account, sizeof(oldMan.account));
+    cin.getline(oldMan.player.account, sizeof(oldMan.player.account));
 
     gotoxy(directX + 10, directY + 7);
-    cin.getline(oldMan.password, sizeof(oldMan.password));
+    cin.getline(oldMan.player.password, sizeof(oldMan.player.password));
 
-    if(isExistAcc(FileName, oldMan.account, index))        //Check username if it is signed up then Check password is correct (similar to storing in file)
+    if(isExistAcc(FileName, oldMan.player.account, index))        //Check username if it is signed up then Check password is correct (similar to storing in file)
     {  
-        if(isPasswordCorrect(FileName, oldMan.password, index))        //compare the password with the stored one in SaveFile.dat
+        if(isPasswordCorrect(FileName, oldMan.player.password, index))        //compare the password with the stored one in SaveFile.dat
         {
             TextColor(BlackW);
             gotoxy(directX, directY + 22);
@@ -348,6 +346,7 @@ void signIn(string FileName, User &oldMan, unsigned int &index)
             gotoxy(directX, directY + 22);
             cout << "Wrong Password";
             Sleep(1000);
+            clearScreen();
             //244 = 15*16 + 4 red text white background
             TextColor(RW);
             signIn(FileName, oldMan, index);                    //sign in again
@@ -360,8 +359,8 @@ void signIn(string FileName, User &oldMan, unsigned int &index)
         cout << "Invalid Account" << endl;
         gotoxy(directX, directY + 11);
         cout << "Please Sign Up" << endl;
-        gotoxy(directX - 15, directY + 12);
-        cout << "Press Space to try Login again Or Esc to SignUp" << endl;
+        gotoxy(directX - 25, directY + 12);
+        cout << "Press Space to try Login again, Esc to SignUp or any keys to Play as Guest." << endl;
         //244 = 15*16 + 4 red text white background
         TextColor(RW);
         char button = getch();
@@ -378,11 +377,9 @@ void signIn(string FileName, User &oldMan, unsigned int &index)
         }
 
     }
-    
-    
 }
 
-bool isExistAcc(string FileName, char username[17], unsigned int &index)
+bool isExistAcc(string FileName, char username[20], unsigned int &index)
 {
     ifstream fin(FileName, ios::binary);
     if (!fin.is_open())
@@ -393,10 +390,10 @@ bool isExistAcc(string FileName, char username[17], unsigned int &index)
     
     fin.seekg(0, ios::end);     //point to the end of file
     int file_size = fin.tellg();    //size of file in bytes
-    int numAcc = file_size/sizeof(struct User);   //count a number of account signed up
+    int numAcc = file_size/sizeof(struct Player);   //count a number of account signed up
 
     vector <string> name;   //Storing the signed Account
-    char nameTemp[17];
+    char nameTemp[20];
     
     //if there is no acc signed up before, test will be skipped
     if (file_size == 0)
@@ -406,7 +403,7 @@ bool isExistAcc(string FileName, char username[17], unsigned int &index)
         for (int i = 0; i < numAcc; i++)
         {
             fin.seekg(sizeof(struct User) * i,ios::beg);  //point to the first element of the username
-            fin.read(nameTemp, 17);         //read username
+            fin.read(nameTemp, 20);         //read username
             name.push_back((string)nameTemp);
         }
     }
@@ -426,10 +423,9 @@ bool isExistAcc(string FileName, char username[17], unsigned int &index)
 
 }
 
-bool isPasswordCorrect(string FileName, char password[15], unsigned int index)
+bool isPasswordCorrect(string FileName, char password[20], unsigned int index)
 {
-	TextColor(BlackW);
-    char passTemp[15];
+    char passTemp[20];
     bool Correct = false;
     ifstream fin(FileName, ios::binary);
     if (!fin.is_open())
@@ -438,8 +434,8 @@ bool isPasswordCorrect(string FileName, char password[15], unsigned int index)
         exit(0);
     }
     
-    fin.seekg(17 + (sizeof(struct User) * index) ,ios::beg);  //point to the first element of the password
-    fin.read(passTemp, 15);         //read password (15 is size of password)
+    fin.seekg(20 + (sizeof(struct Player) * index) ,ios::beg);  //point to the first element of the password
+    fin.read(passTemp, 20);         //read password (20 is size of password)
     
     if (strcmp(password, passTemp) == 0) 
         Correct = true;
@@ -450,7 +446,6 @@ bool isPasswordCorrect(string FileName, char password[15], unsigned int index)
 
 void getInfo (string FileName, User &oldMan, unsigned int index)
 {
-	TextColor(BlackW);
     ifstream fin(FileName, ios::binary);
     if (!fin.is_open())
     {
@@ -458,8 +453,10 @@ void getInfo (string FileName, User &oldMan, unsigned int index)
         exit(0);
     }
     
-    fin.seekg((sizeof(oldMan.account) + sizeof(oldMan.password)) + sizeof(User)*index, ios::beg);        //point to the record of the indexth User
-    fin.read((char*) &oldMan.record, sizeof(int));                                                      //read score and size of stage to User oldMan
+    //fin.seekg((sizeof(oldMan.player.account) + sizeof(oldMan.player.password)) + sizeof(oldman.player)*index, ios::beg);        //point to the record of the indexth player
+    fin.seekg((sizeof(oldMan.player.account) + sizeof(oldMan.player.password)), ios::beg);        //point to the record of the indexth player
+    //fin.read((char*) &oldMan.record, sizeof(int));                                                      //read score and size of stage to Player oldMan
+    //fin.read((char*) &oldMan.savedStage, sizeof(oldMan.savedStage));
 }
 
 void updateScore(string FileName, User &oldMan, unsigned int index, int newscore)

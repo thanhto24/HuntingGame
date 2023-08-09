@@ -64,10 +64,10 @@ struct State
 
 struct Player
 {
-    char username[17];          //17bytes
-    char password[15];          //15bytes
-    int record;                 //score(4bytes)
-    State savedStage; 
+    char account[20];          //20bytes
+    char password[20];          //20bytes
+    //int record;                 //score(4bytes)
+    //State savedStage; 
 };
 
 struct Point
@@ -110,8 +110,7 @@ struct User
     int level;
     int direct;
     int record;
-    char account[99];
-    char password[99];
+	Player player;
     // char fileName[99];
 };
 
