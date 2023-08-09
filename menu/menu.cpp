@@ -405,10 +405,10 @@ int main(){
     DisableResizeWindow();
     system("color f0");
     TextColor(BlackW);
-//    gotoxy(79, 38);
-//    cout << "Use arrow key to move.";
-//    gotoxy(78, 39);
-//    cout << "Press SPACE for choosing.";
+    gotoxy(79, 38);
+    cout << "Use arrow key to move.";
+    gotoxy(78, 39);
+    cout << "Press SPACE for choosing.";
     generateAccScreen(roundSelect, Choice, FileName, user, index);
     if(roundSelect == -1)
         accountLogedIn = false;
