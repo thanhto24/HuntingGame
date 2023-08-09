@@ -1,6 +1,7 @@
-#include "showing.h"
+#include "header.h"
 
 //https://www.codeincodeblock.com/2011/03/move-console-windows-using-codeblock.html
+/*
 HWND WINAPI GetConsoleWindowNT(void)
 {
     //declare function pointer type
@@ -19,7 +20,7 @@ HWND WINAPI GetConsoleWindowNT(void)
     //call the undocumented function
     return GetConsoleWindow();
 }
-
+*/
 void DisableResizeWindow()
 {
     HWND hWnd = GetConsoleWindow();

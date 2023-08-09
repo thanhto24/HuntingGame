@@ -1,4 +1,4 @@
-#include "printDesign.h"
+#include "header.h"
 
 void title(){
 	ifstream ifs("title.txt");

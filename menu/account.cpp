@@ -1,5 +1,4 @@
-#include "account.h"
-#include "printDesign.h"
+#include "header.h"
 
 void generateAccScreen(int &roundSelect, int Choice, string FileName, User &oldMan, unsigned int &index)
 {

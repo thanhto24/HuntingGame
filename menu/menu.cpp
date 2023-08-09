@@ -1,19 +1,7 @@
-#include "menu.h"
-#include "printDesign.h"
-
-const int snakeColor = 14;
-const int appleColor = 221;
-const int bigAppleColor = 238;
-const int wallColor = 68;
-const int gateColor = 3;
-const int basicColor = 7;
-const int backgroundColor = 114;
-const int teleportGateColor = 176;
-const int landMineColor = 16;
+#include "header.h"
 
 void generateMenu (int &roundSelect, int Choice, string FileName)
 {
-	cout << 1111111 << endl;
     roundSelect = 1;
     int directX = 85, directY = 19;
 
@@ -174,7 +162,7 @@ void printMenu(int roundSelect, int Choice, string FileName)
         case 1:
         {
             if (Choice == 1)
-            {
+            { 
                 //delete old boxs
                 deleteMenuBox(directX - 2, directY + 2);
                 deleteMenuBox(directX - 2, directY + 6);
@@ -351,6 +339,7 @@ void printMenu(int roundSelect, int Choice, string FileName)
             clearScreen();
             gotoxy(0, 6);
             //printLeaderBoard(FileName);
+            // displayFiles();
             break;
         }
     }
@@ -391,7 +380,7 @@ void printCredit()
 }
 
 int main(){
-	
+	Sleep(5000);
     int roundSelect = 1, Choice = 1;
     int *pChoice = &Choice;
     User user;
