@@ -462,7 +462,7 @@ void getInfo (string FileName, User &oldMan, unsigned int index)
     //fin.read((char*) &oldMan.savedStage, sizeof(oldMan.savedStage));
 }
 
-void updateScore(string FileName, User &oldMan, unsigned int index, int newscore)
+/*void updateScore(string FileName, User &oldMan, unsigned int index, Board board)
 {
     vector <User> List;
     User temp;
@@ -475,19 +475,19 @@ void updateScore(string FileName, User &oldMan, unsigned int index, int newscore
     
     fin.seekg(0, ios::end);     //point to the end of file
     int file_size = fin.tellg();    //size of file in bytes
-    int numAcc = file_size/sizeof(struct User);   //count the number of accounts signed up
+    int numAcc = file_size/(sizeof(struct Player) + sizeof(Point) + 3*sizeof(int));   //count the number of accounts signed up
 
     fin.seekg(0, ios::beg);
     for (int i = 0; i < numAcc; i++)
     {
-        fin.read((char*) &temp, sizeof(User));        //store all user's info to array List
+        fin.read((char*) &temp, (sizeof(struct Player) + sizeof(Point) + 3*sizeof(int)));        //store all user's info to array List
         List.push_back(temp);
     }
 
     fin.close();
 
-    List[index].points = newscore;      //update a new score , storing in file
-    oldMan.points = newscore;           //in play time
+    List[index].level = board.level;      //update a new score , storing in file
+    oldMan.level = board.level;           //in play time
     ofstream fout(FileName, ios::binary);
     if (!fout.is_open())
     {
@@ -498,8 +498,8 @@ void updateScore(string FileName, User &oldMan, unsigned int index, int newscore
     fout.seekp(0, ios::beg);
     for (int i = 0; i < numAcc; i++)
     {
-        fout.write((char*) &List[i], sizeof(User));       //overwriting SaveFile
+        fout.write((char*) &List[i], (sizeof(struct Player) + sizeof(Point) + 3*sizeof(int)));       //overwriting SaveFile
     }
 
     fout.close();
-}
+}*/

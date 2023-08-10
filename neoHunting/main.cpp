@@ -1,24 +1,5 @@
 #include "header.h"
 /*
-#include <iostream>
-#include <windows.h> //color, gotoxy, ...
-#include <conio.h>   //kbhit
-#include <cstring>
-#include <string.h>
-#include <string>
-#include <sstream>
-#include <vector>
-#include <stdlib.h> //random
-#include <fstream>  // file
-#include <ctime>
-
-#define ii pair<int, int>
-#define iii pair<ii, int>
-#define f first
-#define s second
-#define mp make_pair
-
-using namespace std;
 
 // Dinh nghia: -1 la dau ran, -2, -3, -4, ... la than ran, 'a' la qua tao, 'A' la qua tao to, 1 la tuong |, 2 la tuong -
 // 3->6 la huong xuat phat ban dau, lần lượt là trái phải trên dưới. Vd: ô a[5][6] = 4, có nghĩa là rắn được spawn ở ô (5,6) và đi sang phải
@@ -46,22 +27,7 @@ void FixConsoleWindow()
 
     MoveWindow(consoleWindow, windowRect.left, windowRect.top, width, height, TRUE);
 }
-/*
-void gotoxy(int x, int y)
-{
-    static HANDLE h = NULL;
-    if (!h)
-        h = GetStdHandle(STD_OUTPUT_HANDLE);
-    COORD c = {x, y};
-    SetConsoleCursorPosition(h, c);
-}
 
-void TextColor(int x) // X là mã màu
-{
-    HANDLE h = GetStdHandle(STD_OUTPUT_HANDLE);
-    SetConsoleTextAttribute(h, x);
-}
-*/
 void set_cursor(bool visible)
 {
     CONSOLE_CURSOR_INFO info;
@@ -727,8 +693,9 @@ void process(Snake &snake, Board &board, User user)
     }
     // system("cls");
     // gotoxy(5, 5);
-    if (board.isWin)
+    if (board.isWin){
         cout << "CONGRATULATION!";
+	}
     else
         cout << "You are loser!";
     deleteObj(snake, board);
@@ -793,7 +760,6 @@ void process(Snake &snake, Board &board, User user)
 
 
 int main(){
-	//Luu y rang phan luu file t chi moi luu ten tai khoan + mat khau chu chua co may cai thong tin ve con ran, doi toi nay t cook phan do
     int roundSelect = 1, Choice = 1;
     int *pChoice = &Choice;
     User user;
@@ -815,8 +781,11 @@ int main(){
     gotoxy(78, 39);
     cout << "Press SPACE for choosing.";
     generateAccScreen(roundSelect, Choice, FileName, user, index);
+    
     if(roundSelect == -1)
         accountLogedIn = false;
+    
+    //Truong hop khon dang nhap
     if(!accountLogedIn){
 		board.level = 1;
 		board.score = 0;
@@ -825,6 +794,7 @@ int main(){
 		startPoint = snake.head;
 		user.direct = 1;
 	}
+	//Truong hop tao tai khoan
 	else if(accountLogedIn && user.bodyOfSnake.size() == 0){
 		board.level = user.level = 1;
 		board.score = user.points = 0;
@@ -833,6 +803,7 @@ int main(){
 		startPoint = snake.head;
 		user.direct = 1;
 	}
+	//Truong hop da choi tu truoc
     else{
 		board.level = user.level;
 		board.score = user.points;
@@ -855,11 +826,15 @@ int main(){
     		board.game_active = true;
 	        init(snake, board, startPoint, user.direct);
 	        process(snake, board, user);
+	        //Neu choi thang
 	        if (board.isWin)
 	            board.level ++;
+	        
+	        //Neu choi dang Guest thi luc moi vao choi chtr se thong bao thua chu ko chay chuong trinh choi nen lam dieu kien tranh
 	        else if (!board.isWin && firstTime && !accountLogedIn)
 	        	firstTime = false;
 	        //else if (!board.isWin && !firstTime){
+	        //Neu choi thua
 	        else{
 	        	if(!accountLogedIn)
 	        		board.level = 1;
