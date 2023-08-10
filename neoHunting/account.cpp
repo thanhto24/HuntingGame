@@ -301,8 +301,10 @@ void signUp(string FileName)
 	    fout.seekp(0, ios::end);
 	    fout.write(newguy.player.account, 20);
 	    fout.write(newguy.player.password, 20);
-	    //fout.write('\n', 1);
-	    //fout.write((char*) &newguy.points, sizeof(unsigned int));
+	    fout.write((char*) &newguy.bodyOfSnake, sizeof(Point));
+	    fout.write((char*) &newguy.points, sizeof(int));
+	    fout.write((char*) &newguy.level, sizeof(int));
+	    fout.write((char*) &newguy.direct, sizeof(int));
 		fout.close();
 	}
 }
@@ -391,7 +393,7 @@ bool isExistAcc(string FileName, char username[20], unsigned int &index)
     
     fin.seekg(0, ios::end);     //point to the end of file
     int file_size = fin.tellg();    //size of file in bytes
-    int numAcc = file_size/sizeof(struct Player);   //count a number of account signed up
+    int numAcc = file_size/(sizeof(struct Player) + sizeof(Point) + 3*sizeof(int));   //count a number of account signed up
 
     vector <string> name;   //Storing the signed Account
     char nameTemp[20];
@@ -403,7 +405,7 @@ bool isExistAcc(string FileName, char username[20], unsigned int &index)
     {
         for (int i = 0; i < numAcc; i++)
         {
-            fin.seekg(sizeof(struct User) * i,ios::beg);  //point to the first element of the username
+            fin.seekg((sizeof(struct Player) + sizeof(Point) + 3*sizeof(int)) * i,ios::beg);  //point to the first element of the username
             fin.read(nameTemp, 20);         //read username
             name.push_back((string)nameTemp);
         }
@@ -435,7 +437,7 @@ bool isPasswordCorrect(string FileName, char password[20], unsigned int index)
         exit(0);
     }
     
-    fin.seekg(20 + (sizeof(struct Player) * index) ,ios::beg);  //point to the first element of the password
+    fin.seekg(20 + ((sizeof(struct Player) + sizeof(Point) + 3*sizeof(int)) * index) ,ios::beg);  //point to the first element of the password
     fin.read(passTemp, 20);         //read password (20 is size of password)
     
     if (strcmp(password, passTemp) == 0) 

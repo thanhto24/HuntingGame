@@ -86,8 +86,7 @@ struct User
     vector<Point> bodyOfSnake;
     int points;
     int level;
-    int direct = 0;
-    //int record;
+    int direct;
 	Player player;
 };
 

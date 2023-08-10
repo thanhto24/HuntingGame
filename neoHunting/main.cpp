@@ -270,7 +270,6 @@ void init(Snake &snake, Board &board, Point startPoint, int Direct)
     board.score = snake.body.size() * 100;
     board.isWin = false;
     board.scoreToPass = 1000;
-    // board.scoreToPass = 100;
     board.updated = false;
 }
 
@@ -387,16 +386,16 @@ int getDirection(Snake snake, bool isPausing, Board board, User user)
 
         if (tolower(key) != 'p')
         {
-            if (toupper(key) == 'A' || key == 75) // Di chuyển trái
+            if (toupper(key) == 'A' || key == KeyLeft) // Di chuyển trái
                 if (direct != 1)
                     direct = 0; 
-            if (toupper(key) == 'D' || key == 77) // Di chuyển phải
+            if (toupper(key) == 'D' || key == KeyRight) // Di chuyển phải
                 if (direct != 0)
                     direct = 1;
-            if (toupper(key) == 'W' || key == 72) // Di chuyển lên
+            if (toupper(key) == 'W' || key == KeyUp) // Di chuyển lên
                 if (direct != 3)
                     direct = 2;
-            if (toupper(key) == 'S' || key == 80) // Di chuyển xuống
+            if (toupper(key) == 'S' || key == KeyDown) // Di chuyển xuống
                 if (direct != 2)
                     direct = 3;
         }
