@@ -1,4 +1,7 @@
 #include "header.h"
+#include "menu.h"
+#include "printDesign.h"
+#include "account.h"
 
 void generateMenu (int &roundSelect, int Choice, string FileName)
 {
