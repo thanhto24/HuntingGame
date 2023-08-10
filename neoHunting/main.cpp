@@ -820,6 +820,45 @@ int main(){
     	system("color f0");
         int scoreWhenOutGame = 0;
     	generateMenu(roundSelect, Choice, FileName);
+    	
+    	//Thanh To
+    	clearScreen();
+    	system("color f0");
+    	bool isNewUser = true;
+	    vector<User> users = displayFiles();
+	    User user;
+	    cout << "Nhap ten FILE: "; getline(cin, user.fileName);
+	
+	    set_cursor(false);
+	
+	    ifstream ifs("out.txt");
+	    if (ifs.fail())
+	        return 0;
+	    else
+	    {
+	        int n = users.size();
+	        for (int i = 0; i < n; i++)
+	        {
+	            if (user.fileName == users[i].fileName)
+	            {
+	                isNewUser = false;
+	                user = users[i];
+	                break;
+	            }
+	        }
+	        if (!isNewUser)
+	        {
+	            board.level = user.level;
+	            board.score = user.points;
+	            snake.head = user.bodyOfSnake[0];
+	            user.bodyOfSnake.erase(user.bodyOfSnake.begin());
+	            snake.body = user.bodyOfSnake;
+	            startPoint = snake.head;
+	        }
+	        else
+	            board.level = 1;
+	        ifs.close();
+		}
     	while(1){
     		clearScreen();
     		system("color f0");
@@ -838,7 +877,10 @@ int main(){
 	        else{
 	        	if(!accountLogedIn)
 	        		board.level = 1;
-	        	Sleep(1000);
+	        	cout << "Press (Z) to save the game or others key to go back to menu.";
+	            char _key = getch();
+	            if (toupper(_key) == 'Z')
+	                saveFiles(snake, board, user);
 	        	break;
 			}
 		}
