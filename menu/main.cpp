@@ -188,7 +188,7 @@ User getUser(string line)
     return user;
 }
 
-void init(Snake &snake, Board &board, Point startPoint, int Direct)
+void init(Snake &snake, Board &board, Point& startPoint, int Direct)
 {
     Point spawnPoint;
     string address = "Level/";
@@ -207,7 +207,7 @@ void init(Snake &snake, Board &board, Point startPoint, int Direct)
             fin >> board.viewBoard[i][j];
             if (board.viewBoard[i][j] >= 3 && board.viewBoard[i][j] <= 6)
             {
-                cout << startPoint.x << " " << startPoint.y << " " << Direct << endl;
+                // cout << startPoint.x << " " << startPoint.y << " " << Direct << endl;
                 if (startPoint.x != -1 && startPoint.y != -1)
                 {
                     snake.direction = Direct;
@@ -248,15 +248,6 @@ void init(Snake &snake, Board &board, Point startPoint, int Direct)
     setValue(snake.head, spawnPoint);
     snake.body.push_back(snake.head);
 
-    // setValue(spawnPoint, mp(5, 4));
-    // snake.body.push_back(spawnPoint);
-
-    // setValue(spawnPoint, mp(5, 3));
-    // snake.body.push_back(spawnPoint);
-
-    // setValue(spawnPoint, mp(5, 2));
-    // snake.body.push_back(spawnPoint);
-
     board.viewBoard[snake.head.y][snake.head.x] = -1;
 
     for (int i = 1; i < snake.body.size(); i++)
@@ -273,7 +264,7 @@ void init(Snake &snake, Board &board, Point startPoint, int Direct)
     board.haveBigApple = false;
     board.score = snake.body.size() * 100;
     board.isWin = false;
-    board.scoreToPass = 1000;
+    board.scoreToPass = 100;
     // board.scoreToPass = 100;
     board.updated = false;
 }
@@ -435,7 +426,7 @@ void updateBoard(Board &board)
     }
     board.updated = true;
 }
-void move(Snake &snake, Board &board)
+void move(Snake &snake, Board &board, Point& startPoint)
 {
 
     board.viewBoard[snake.body[snake.body.size() - 1].y][snake.body[snake.body.size() - 1].x] = 0;
@@ -484,15 +475,36 @@ void move(Snake &snake, Board &board)
     {
         if (board.viewBoard[snake.head.y][snake.head.x] % 10 == snake.direction)
         {
-            if (snake.head.x == board.teleport[2].first.second)
+            // cout << snake.direction << " " << board.viewBoard[snake.head.y][snake.head.x] % 10 << endl;
+            // return;
+            if (snake.direction >= 0 && snake.direction <= 1)
             {
-                snake.head.x = board.teleport[7].first.second - 1;
-                snake.head.y = board.teleport[7].first.first;
+                // cout << "hhh!" << endl;
+                if (snake.head.x == board.teleport[2].first.second)
+                {
+                    snake.head.x = board.teleport[7].first.second + 1;
+                    snake.head.y = board.teleport[7].first.first;
+                }
+                else if (snake.head.x == board.teleport[7].first.second)
+                {
+                    snake.head.x = board.teleport[2].first.second - 1;
+                    snake.head.y = board.teleport[2].first.first;
+                }
             }
-            else if (snake.head.x == board.teleport[7].first.second)
+            else if (snake.direction >= 2 && snake.direction <= 3)
             {
-                snake.head.x = board.teleport[2].first.second + 1;
-                snake.head.y = board.teleport[2].first.first;
+                if (snake.head.y == board.teleport[2].first.first)
+                {
+                    // cout << "YYY" << endl;
+                    snake.head.x = board.teleport[7].first.second - 1;
+                    snake.head.y = board.teleport[7].first.first + 1;
+                }
+                else if (snake.head.y == board.teleport[7].first.first)
+                {
+                    // cout << "NNN" << endl;
+                    snake.head.x = board.teleport[2].first.second + 1;
+                    snake.head.y = board.teleport[2].first.first - 1;
+                }
             }
         }
         else
@@ -515,6 +527,7 @@ void move(Snake &snake, Board &board)
     }
     if (board.score >= board.scoreToPass || board.updated)
     {
+        startPoint = {-1, -1};
         if (!board.updated)
             updateBoard(board);
         if (board.viewBoard[snake.head.y][snake.head.x] == 9)
@@ -706,7 +719,7 @@ void deleteObj(Snake &snake, Board &board)
     board.gate.clear();
 }
 
-void process(Snake &snake, Board &board, User user)
+void process(Snake &snake, Board &board, User user, Point& startPoint)
 {
     int preS = board.ss;
     bool isPausing = false;
@@ -717,7 +730,7 @@ void process(Snake &snake, Board &board, User user)
         if (snake.direction != 112)
         {
             isPausing = false;
-            move(snake, board);
+            move(snake, board, startPoint);
             if (!board.game_active || board.isWin)
                 break;
             draw(snake, board);
@@ -740,7 +753,10 @@ void process(Snake &snake, Board &board, User user)
     if (board.isWin)
         cout << "CONGRATULATION!";
     else
+    {
+        startPoint = {-1, -1};
         cout << "You are loser!";
+    }
     deleteObj(snake, board);
 }
 
@@ -791,7 +807,7 @@ int main()
     {
         system("cls");
         init(snake, board, startPoint, user.direct);
-        process(snake, board, user);
+        process(snake, board, user, startPoint);
         if (board.isWin)
             board.level ++;
     }
