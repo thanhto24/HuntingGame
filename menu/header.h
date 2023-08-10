@@ -137,3 +137,7 @@ const int teleportGateColor = 176;
 const int landMineColor = 16;
 
 #endif
+
+
+#include "account.cpp"
+#include "printDesign.cpp"

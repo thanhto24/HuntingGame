@@ -1,7 +1,15 @@
-#include "header.h"
 #include "menu.h"
 #include "printDesign.h"
-#include "account.h"
+
+/*const int snakeColor = 14;
+const int appleColor = 221;
+const int bigAppleColor = 238;
+const int wallColor = 68;
+const int gateColor = 3;
+const int basicColor = 7;
+const int backgroundColor = 114;
+const int teleportGateColor = 176;
+const int landMineColor = 16;*/
 
 void generateMenu (int &roundSelect, int Choice, string FileName)
 {
@@ -165,7 +173,7 @@ void printMenu(int roundSelect, int Choice, string FileName)
         case 1:
         {
             if (Choice == 1)
-            { 
+            {
                 //delete old boxs
                 deleteMenuBox(directX - 2, directY + 2);
                 deleteMenuBox(directX - 2, directY + 6);
@@ -331,18 +339,22 @@ void printMenu(int roundSelect, int Choice, string FileName)
             }
             break;
         }*/
+        //Credit Button
         case 3:
         {
             clearScreen();
             printCredit();
             break;
         }
+        //LeaderBoard Button
         case 4:
         {
             clearScreen();
             gotoxy(0, 6);
+            gotoxy(77, 29);
+            TextColor(241);
+    		cout << "Press ESC to exit";
             //printLeaderBoard(FileName);
-            // displayFiles();
             break;
         }
     }
@@ -382,8 +394,8 @@ void printCredit()
     TextColor(241);
 }
 
-int main(){
-	Sleep(5000);
+/*int main(){
+	
     int roundSelect = 1, Choice = 1;
     int *pChoice = &Choice;
     User user;
@@ -393,8 +405,8 @@ int main(){
 
     HWND hWnd=GetConsoleWindowNT();
     MoveWindow(hWnd, 0, 0, 1450, 760,TRUE);
-    //ShowScrollbar(0);
-    //DisableResizeWindow();
+    ShowScrollbar(0);
+    DisableResizeWindow();
     system("color f0");
     TextColor(BlackW);
     gotoxy(79, 38);
@@ -409,4 +421,4 @@ int main(){
     	generateMenu(roundSelect, Choice, FileName);
 	}
 	return 0;
-}
+}*/
