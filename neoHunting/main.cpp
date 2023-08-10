@@ -825,14 +825,22 @@ int main(){
 		startPoint = snake.head;
 		user.direct = 1;
 	}
-    /*else{
+	else if(accountLogedIn && user.bodyOfSnake.size() == 0){
+		board.level = user.level = 1;
+		board.score = user.points = 0;
+		snake.head = {5, 5};
+		snake.body = user.bodyOfSnake;
+		startPoint = snake.head;
+		user.direct = 1;
+	}
+    else{
 		board.level = user.level;
 		board.score = user.points;
 		snake.head = user.bodyOfSnake[0];
 		user.bodyOfSnake.erase(user.bodyOfSnake.begin());
 		snake.body = user.bodyOfSnake;
 		startPoint = snake.head;
-	}*/
+	}
 	
 	//bien dat ra de tranh bug
 	bool firstTime = true;
@@ -849,12 +857,13 @@ int main(){
 	        process(snake, board, user);
 	        if (board.isWin)
 	            board.level ++;
-	        else if (!board.isWin && firstTime)
+	        else if (!board.isWin && firstTime && !accountLogedIn)
 	        	firstTime = false;
-	        else if (!board.isWin && !firstTime){
+	        //else if (!board.isWin && !firstTime){
+	        else{
 	        	if(!accountLogedIn)
 	        		board.level = 1;
-	        	Sleep(2000);
+	        	Sleep(1000);
 	        	break;
 			}
 		}

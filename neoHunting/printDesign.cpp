@@ -269,29 +269,29 @@ void printMenuBox(int directX, int directY)
 {
     //  print upper board
     gotoxy(directX - 5, directY - 1);
-    cout << char(201);
+    cout << 'X';//char(201);
     for (int i = 0; i < 21; i++)
-        cout << char(205);
-    cout << char(187); 
+        cout << 'X';//char(205);
+    cout << 'X';//char(187); 
     // print middle board
     for (int i = 0; i < 4; i++)
     {
         gotoxy(directX - 5, directY + i);
-        cout << char(186);
+        cout << 'X';//char(186);
 
         gotoxy(directX + 17, directY + i);
-        cout << char(186);
+        cout << 'X';//char(186);
         
     }
 
     //print bottom box
     gotoxy(directX - 5, directY + 3);
-    cout << char(200);
+    cout << 'X';//char(200);
     for (int i = 0; i < 21; i++)
     {
-        cout << char(205);
+        cout << 'X';//char(205);
     }
-    cout << char(188); 
+    cout << 'X';//char(188); 
 }
 
 void deleteMenuBox(int directX, int directY)
