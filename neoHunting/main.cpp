@@ -152,7 +152,7 @@ User getUser(string line)
     return user;
 }
 
-void init(Snake &snake, Board &board, Point startPoint, int Direct)
+void init(Snake &snake, Board &board, Point& startPoint, int Direct)
 {
     Point spawnPoint;
     string address = "Level/";
@@ -163,13 +163,15 @@ void init(Snake &snake, Board &board, Point startPoint, int Direct)
     board.viewBoard = new int *[board.hei];
     for (int i = 0; i < board.hei; i++)
         board.viewBoard[i] = new int[board.wid];
-
+        
     for (int i = 0; i < board.hei; i++)
+    {
         for (int j = 0; j < board.wid; j++)
         {
             fin >> board.viewBoard[i][j];
             if (board.viewBoard[i][j] >= 3 && board.viewBoard[i][j] <= 6)
             {
+                // cout << startPoint.x << " " << startPoint.y << " " << Direct << endl;
                 if (startPoint.x != -1 && startPoint.y != -1)
                 {
                     snake.direction = Direct;
@@ -203,21 +205,12 @@ void init(Snake &snake, Board &board, Point startPoint, int Direct)
                 board.landMines.push_back(temp);
             }
         }
-
+    }
     fin.close();
     board.game_active = true;
 
     setValue(snake.head, spawnPoint);
     snake.body.push_back(snake.head);
-
-    // setValue(spawnPoint, mp(5, 4));
-    // snake.body.push_back(spawnPoint);
-
-    // setValue(spawnPoint, mp(5, 3));
-    // snake.body.push_back(spawnPoint);
-
-    // setValue(spawnPoint, mp(5, 2));
-    // snake.body.push_back(spawnPoint);
 
     board.viewBoard[snake.head.y][snake.head.x] = -1;
 
@@ -235,7 +228,8 @@ void init(Snake &snake, Board &board, Point startPoint, int Direct)
     board.haveBigApple = false;
     board.score = snake.body.size() * 100;
     board.isWin = false;
-    board.scoreToPass = 1000;
+    board.scoreToPass = 100;
+    // board.scoreToPass = 100;
     board.updated = false;
 }
 
@@ -246,14 +240,16 @@ vector<User> displayFiles()
 
     if (ifs.fail())
     {
-        cout << "Error opening file: out.txt" << endl;
+        cout << "Error opening file: out,txt" << endl;
         return users;
     }
-    if (!ifs.eof())
+    else if (!ifs.eof())
     {
         string line;
         while (getline(ifs, line))
+        {
             users.push_back(getUser(line));
+        }
     }
     for (int i = 0; i < users.size(); i++)
         cout << "PLAYER NAME: " << users[i].fileName << " - Scores: " << users[i].points << " - Level: " << users[i].level << endl;
@@ -263,8 +259,8 @@ vector<User> displayFiles()
 
 void saveFiles(Snake snake, Board board, User user)
 {
-    // (Tên File)-tọa dộ x của rắn-tọa độ y của rắn-độ dài của rắn-điểm-level
-    // Tên File,({x, y}{x,y}...{x,y})(Tọa độ các điểm trên thân rắn, đầu rắn là {x,y} đầu tiên),điểm,level
+    // (T�n File)-t?a d? x c?a r?n-t?a d? y c?a r?n-d? d�i c?a r?n-di?m-level
+    // T�n File,({x, y}{x,y}...{x,y})(T?a d? c�c di?m tr�n th�n r?n, d?u r?n l� {x,y} d?u ti�n),di?m,level
     bool beFound = false;
     int position = 0;
     string temp_name = user.fileName;
@@ -346,26 +342,28 @@ void pauseGame()
 int getDirection(Snake snake, bool isPausing, Board board, User user)
 {
     int direct = snake.direction;
+    if (snake.body.size() == 1)
+        saveFiles(snake, board, user);
     if (kbhit()) // Kiem tra nhan keyboard
     {
         char key = getch(); // Lay key
 
         if (tolower(key) != 'p')
         {
-            if (toupper(key) == 'A' || key == KeyLeft) // Di chuyển trái
+            if (toupper(key) == 'A' || key == 75) // Di chuy?n tr�i
                 if (direct != 1)
                     direct = 0; 
-            if (toupper(key) == 'D' || key == KeyRight) // Di chuyển phải
+            if (toupper(key) == 'D' || key == 77) // Di chuy?n ph?i
                 if (direct != 0)
                     direct = 1;
-            if (toupper(key) == 'W' || key == KeyUp) // Di chuyển lên
+            if (toupper(key) == 'W' || key == 72) // Di chuy?n l�n
                 if (direct != 3)
                     direct = 2;
-            if (toupper(key) == 'S' || key == KeyDown) // Di chuyển xuống
+            if (toupper(key) == 'S' || key == 80) // Di chuy?n xu?ng
                 if (direct != 2)
                     direct = 3;
         }
-        if (tolower(key) == 'p' && !isPausing) // Nhấn p để pause game
+        if (tolower(key) == 'p' && !isPausing) // Nh?n p d? pause game
         {
             pauseGame();
             char _key = getch();
@@ -392,8 +390,9 @@ void updateBoard(Board &board)
     }
     board.updated = true;
 }
-void move(Snake &snake, Board &board)
+void move(Snake &snake, Board &board, Point& startPoint)
 {
+
     board.viewBoard[snake.body[snake.body.size() - 1].y][snake.body[snake.body.size() - 1].x] = 0;
     setValue(snake.tail, snake.body[snake.body.size() - 1]);
 
@@ -440,15 +439,36 @@ void move(Snake &snake, Board &board)
     {
         if (board.viewBoard[snake.head.y][snake.head.x] % 10 == snake.direction)
         {
-            if (snake.head.x == board.teleport[2].first.second)
+            // cout << snake.direction << " " << board.viewBoard[snake.head.y][snake.head.x] % 10 << endl;
+            // return;
+            if (snake.direction >= 0 && snake.direction <= 1)
             {
-                snake.head.x = board.teleport[7].first.second - 1;
-                snake.head.y = board.teleport[7].first.first;
+                // cout << "hhh!" << endl;
+                if (snake.head.x == board.teleport[2].first.second)
+                {
+                    snake.head.x = board.teleport[7].first.second + 1;
+                    snake.head.y = board.teleport[7].first.first;
+                }
+                else if (snake.head.x == board.teleport[7].first.second)
+                {
+                    snake.head.x = board.teleport[2].first.second - 1;
+                    snake.head.y = board.teleport[2].first.first;
+                }
             }
-            else if (snake.head.x == board.teleport[7].first.second)
+            else if (snake.direction >= 2 && snake.direction <= 3)
             {
-                snake.head.x = board.teleport[2].first.second + 1;
-                snake.head.y = board.teleport[2].first.first;
+                if (snake.head.y == board.teleport[2].first.first)
+                {
+                    // cout << "YYY" << endl;
+                    snake.head.x = board.teleport[7].first.second - 1;
+                    snake.head.y = board.teleport[7].first.first + 1;
+                }
+                else if (snake.head.y == board.teleport[7].first.first)
+                {
+                    // cout << "NNN" << endl;
+                    snake.head.x = board.teleport[2].first.second + 1;
+                    snake.head.y = board.teleport[2].first.first - 1;
+                }
             }
         }
         else
@@ -471,6 +491,7 @@ void move(Snake &snake, Board &board)
     }
     if (board.score >= board.scoreToPass || board.updated)
     {
+        startPoint = {-1, -1};
         if (!board.updated)
             updateBoard(board);
         if (board.viewBoard[snake.head.y][snake.head.x] == 9)
@@ -527,13 +548,13 @@ void draw(const Snake snake, const Board board)
             {
                 TextColor(wallColor);
                 SetConsoleOutputCP(65001);
-                cout << "║║";
+                cout << "��";
             }
             else if (board.viewBoard[i][j] == 2)
             {
                 TextColor(wallColor);
                 SetConsoleOutputCP(65001);
-                cout << "══";
+                cout << "--";
             }
             else if (board.viewBoard[i][j] >= 9 && board.viewBoard[i][j] <= 13)
             {
@@ -662,7 +683,7 @@ void deleteObj(Snake &snake, Board &board)
     board.gate.clear();
 }
 
-void process(Snake &snake, Board &board, User user)
+void process(Snake &snake, Board &board, User user, Point& startPoint)
 {
     int preS = board.ss;
     bool isPausing = false;
@@ -673,7 +694,7 @@ void process(Snake &snake, Board &board, User user)
         if (snake.direction != 112)
         {
             isPausing = false;
-            move(snake, board);
+            move(snake, board, startPoint);
             if (!board.game_active || board.isWin)
                 break;
             draw(snake, board);
@@ -693,11 +714,13 @@ void process(Snake &snake, Board &board, User user)
     }
     // system("cls");
     // gotoxy(5, 5);
-    if (board.isWin){
+    if (board.isWin)
         cout << "CONGRATULATION!";
-	}
     else
+    {
+        startPoint = {-1, -1};
         cout << "You are loser!";
+    }
     deleteObj(snake, board);
 }
 
@@ -864,14 +887,14 @@ int main(){
     		system("color f0");
     		board.game_active = true;
 	        init(snake, board, startPoint, user.direct);
-	        process(snake, board, user);
+	        process(snake, board, user, startPoint);
 	        //Neu choi thang
 	        if (board.isWin)
 	            board.level ++;
 	        
 	        //Neu choi dang Guest thi luc moi vao choi chtr se thong bao thua chu ko chay chuong trinh choi nen lam dieu kien tranh
-	        else if (!board.isWin && firstTime && !accountLogedIn)
-	        	firstTime = false;
+	        //else if (!board.isWin && firstTime && !accountLogedIn)
+	        	//firstTime = false;
 	        //else if (!board.isWin && !firstTime){
 	        //Neu choi thua
 	        else{
