@@ -1,9 +1,9 @@
-﻿#include "header.h"
+#include "header.h"
 /*
 
 // Dinh nghia: -1 la dau ran, -2, -3, -4, ... la than ran, 'a' la qua tao, 'A' la qua tao to, 1 la tuong |, 2 la tuong -
-// 3->6 la huong xuat phat ban dau, láº§n lÆ°á»£t lÃ  trÃ¡i pháº£i trÃªn dÆ°á»›i. Vd: Ã´ a[5][6] = 4, cÃ³ nghÄ©a lÃ  ráº¯n Ä‘Æ°á»£c spawn á»Ÿ Ã´ (5,6) vÃ  Ä‘i sang pháº£i
-// Dinh nghia: 9 la tÆ°á»ng cá»§a cá»•ng, chá»‰ xuáº¥t hiá»‡n khi sáº¯p qua mÃ n. 10 -> 13 la cá»•ng, chá»©a hÆ°á»›ng cáº§n Ä‘i Ä‘á»ƒ vÃ o :V. vÃ­ dá»¥
+// 3->6 la huong xuat phat ban dau, lần lượt là trái phải trên dưới. Vd: ô a[5][6] = 4, có nghĩa là rắn được spawn ở ô (5,6) và đi sang phải
+// Dinh nghia: 9 la tường của cổng, chỉ xuất hiện khi sắp qua màn. 10 -> 13 la cổng, chứa hướng cần đi để vào :V. ví dụ
 // 00 00 00 00 00 00
 // 00 09 09 09 09 00
 // 00 00 00 00 11 00
@@ -309,13 +309,13 @@ int getDirection(Snake snake, bool isPausing, Board board, User user, bool accou
 
         if (tolower(key) != 'p')
         {
-            if (toupper(key) == 'A' || key == 75) // Di chuy?n trái
+            if (toupper(key) == 'A' || key == 75) // Di chuy?n tr�i
                 if (direct != 1)
                     direct = 0;
             if (toupper(key) == 'D' || key == 77) // Di chuy?n ph?i
                 if (direct != 0)
                     direct = 1;
-            if (toupper(key) == 'W' || key == 72) // Di chuy?n lên
+            if (toupper(key) == 'W' || key == 72) // Di chuy?n l�n
                 if (direct != 3)
                     direct = 2;
             if (toupper(key) == 'S' || key == 80) // Di chuy?n xu?ng
@@ -507,7 +507,7 @@ void draw(const Snake snake, const Board board)
             {
                 TextColor(wallColor);
                 SetConsoleOutputCP(65001);
-                cout << "¦¦";
+                cout << "��";
             }
             else if (board.viewBoard[i][j] == 2)
             {
@@ -800,7 +800,7 @@ int main() {
                     user = users[i];
                     break;
                 }
-            } 
+            }
             if (!isNewUser)
             {
                 board.level = user.level;
