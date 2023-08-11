@@ -800,7 +800,7 @@ int main() {
                     user = users[i];
                     break;
                 }
-            }
+            } 
             if (!isNewUser)
             {
                 board.level = user.level;
