@@ -819,7 +819,6 @@ int main() {
                 startPoint = snake.head;
                 user.direct = 1;
             }
-            ifs.close();
         }
         //Khi play co dang nhap, phan nay de tam chu chua hieu chinh :(((((((((((((
         else if (accountLogedIn)
@@ -852,8 +851,8 @@ int main() {
                 startPoint = snake.head;
                 user.direct = 1;
             }
-            ifs.close();
         }
+        ifs.close();
         while (1) {
             clearScreen();
             system("color f0");
