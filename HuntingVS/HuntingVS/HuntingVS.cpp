@@ -1,9 +1,9 @@
-#include "header.h"
+﻿#include "header.h"
 /*
 
 // Dinh nghia: -1 la dau ran, -2, -3, -4, ... la than ran, 'a' la qua tao, 'A' la qua tao to, 1 la tuong |, 2 la tuong -
-// 3->6 la huong xuat phat ban dau, lần lượt là trái phải trên dưới. Vd: ô a[5][6] = 4, có nghĩa là rắn được spawn ở ô (5,6) và đi sang phải
-// Dinh nghia: 9 la tường của cổng, chỉ xuất hiện khi sắp qua màn. 10 -> 13 la cổng, chứa hướng cần đi để vào :V. ví dụ
+// 3->6 la huong xuat phat ban dau, láº§n lÆ°á»£t lÃ  trÃ¡i pháº£i trÃªn dÆ°á»›i. Vd: Ã´ a[5][6] = 4, cÃ³ nghÄ©a lÃ  ráº¯n Ä‘Æ°á»£c spawn á»Ÿ Ã´ (5,6) vÃ  Ä‘i sang pháº£i
+// Dinh nghia: 9 la tÆ°á»ng cá»§a cá»•ng, chá»‰ xuáº¥t hiá»‡n khi sáº¯p qua mÃ n. 10 -> 13 la cá»•ng, chá»©a hÆ°á»›ng cáº§n Ä‘i Ä‘á»ƒ vÃ o :V. vÃ­ dá»¥
 // 00 00 00 00 00 00
 // 00 09 09 09 09 00
 // 00 00 00 00 11 00
@@ -195,7 +195,7 @@ vector<User> displayFiles(bool accountLogedIn, User& user)
 
     if (ifs.fail())
     {
-        cout << "Error opening file: out,txt" << endl;
+        cout << "Error opening file: out.txt" << endl;
         return users;
     }
     else if (!ifs.eof())
@@ -309,13 +309,13 @@ int getDirection(Snake snake, bool isPausing, Board board, User user, bool accou
 
         if (tolower(key) != 'p')
         {
-            if (toupper(key) == 'A' || key == 75) // Di chuy?n tr�i
+            if (toupper(key) == 'A' || key == 75) // Di chuy?n trái
                 if (direct != 1)
                     direct = 0;
             if (toupper(key) == 'D' || key == 77) // Di chuy?n ph?i
                 if (direct != 0)
                     direct = 1;
-            if (toupper(key) == 'W' || key == 72) // Di chuy?n l�n
+            if (toupper(key) == 'W' || key == 72) // Di chuy?n lên
                 if (direct != 3)
                     direct = 2;
             if (toupper(key) == 'S' || key == 80) // Di chuy?n xu?ng
@@ -507,7 +507,7 @@ void draw(const Snake snake, const Board board)
             {
                 TextColor(wallColor);
                 SetConsoleOutputCP(65001);
-                cout << "��";
+                cout << "¦¦";
             }
             else if (board.viewBoard[i][j] == 2)
             {
@@ -642,7 +642,7 @@ void deleteObj(Snake& snake, Board& board)
     board.gate.clear();
 }
 
-void process(Snake& snake, Board& board, User user, Point& startPoint, bool accountLogedIn)
+void process(Snake& snake, Board& board, User &user, Point& startPoint, bool accountLogedIn)
 {
     int preS = board.ss;
     bool isPausing = false;
@@ -677,7 +677,35 @@ void process(Snake& snake, Board& board, User user, Point& startPoint, bool acco
         cout << "CONGRATULATION!";
     else
     {
-        startPoint = { -1, -1 };
+        //startPoint = { -1, -1 };
+        //firstTime = true;
+        board.level = 1;
+        board.score = 0;
+        while (user.bodyOfSnake.size() != 0)
+            user.bodyOfSnake.pop_back();
+
+        //Khi chet thi lam board trong
+        string address = intToString(board.level);
+        address += ".txt";
+        ifstream fin(address.c_str());
+        int trash1, trash2, temp;
+        fin >> trash1 >> trash2;
+        for (int i = 0; i < board.hei; i++)
+        {
+            for (int j = 0; j < board.wid; j++)
+            {
+                fin >> temp;
+                board.viewBoard[i][j] = temp;
+            }
+        }
+        fin.close();
+        while (snake.body.size() != 0)
+            snake.body.pop_back();
+        snake.head = { 5, 5 };
+        snake.body.push_back({ 5, 5 });
+        startPoint = snake.head;
+        user.direct = 1;
+        saveFiles(snake, board, user, accountLogedIn);
         cout << "You are loser!";
     }
     deleteObj(snake, board);
@@ -760,6 +788,7 @@ int main() {
         ifstream ifs("out.txt");
         if (ifs.fail())
             return 0;
+        //Khi Play as Guest
         else if (!accountLogedIn)
         {
             int n = users.size();
@@ -792,6 +821,7 @@ int main() {
             }
             ifs.close();
         }
+        //Khi play co dang nhap, phan nay de tam chu chua hieu chinh :(((((((((((((
         else if (accountLogedIn)
         {
             int n = users.size();
