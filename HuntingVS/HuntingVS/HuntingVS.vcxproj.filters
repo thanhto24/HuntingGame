@@ -13,9 +13,6 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
-    <Filter Include="Resource Files\Level">
-      <UniqueIdentifier>{9f11ee2d-fae7-4803-9ccc-28392305fa46}</UniqueIdentifier>
-    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="HuntingVS.cpp">
@@ -34,22 +31,22 @@
     <Text Include="title.txt">
       <Filter>Resource Files</Filter>
     </Text>
+    <Text Include="out.txt">
+      <Filter>Resource Files</Filter>
+    </Text>
     <Text Include="1.txt">
-      <Filter>Resource Files\Level</Filter>
+      <Filter>Resource Files</Filter>
     </Text>
     <Text Include="2.txt">
-      <Filter>Resource Files\Level</Filter>
+      <Filter>Resource Files</Filter>
     </Text>
     <Text Include="3.txt">
-      <Filter>Resource Files\Level</Filter>
+      <Filter>Resource Files</Filter>
     </Text>
     <Text Include="4.txt">
-      <Filter>Resource Files\Level</Filter>
+      <Filter>Resource Files</Filter>
     </Text>
     <Text Include="5.txt">
-      <Filter>Resource Files\Level</Filter>
-    </Text>
-    <Text Include="out.txt">
       <Filter>Resource Files</Filter>
     </Text>
   </ItemGroup>

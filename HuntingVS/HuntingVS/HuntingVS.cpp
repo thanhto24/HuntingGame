@@ -35,56 +35,6 @@ void set_cursor(bool visible)
     info.bVisible = visible;
     SetConsoleCursorInfo(GetStdHandle(STD_OUTPUT_HANDLE), &info);
 }
-/*
-struct Point
-{
-    int x, y;
-};
-
-struct Snake
-{
-    vector<Point> body;
-    Point head, tail;
-    int direction;
-    bool feed;
-    bool turnRed = false;
-};
-
-struct Board
-{
-    bool game_active;
-    int **viewBoard;
-    int hei, wid;
-    int level;
-    int hh, mm, ss;
-    bool haveBigApple;
-    int score;
-    int scoreToPass;
-    bool isWin;
-    vector<iii> gate; // pair<<vị trí (x, y)>, giá trị>
-    vector<iii> teleport;
-    vector<Point> landMines;
-    bool updated;
-};
-
-struct User
-{
-    string fileName;
-    // vector<pair<int, int>> bodyOfSnake;
-    vector<Point> bodyOfSnake;
-    int points;
-    int level;
-    int direct;
-    // char account[99];
-    // char password[99];
-    // char fileName[99];
-};
-
-/*
-    Lúc đầu Login vào sẽ hiện ra các tên file, nếu chưa có tên file nào thì sẽ kêu người dùng nhập vào tên file và lưu vao User.fileName.
-    Trong quá trình chơi nếu người chơi nhấn Z thì file (có tên fileName) sẽ cập nhật các chỉ số.
-    Nếu người chơi muốn thoát ra ngoài Menu chính thì sẽ lưu lại fileName.
-*/
 
 void setValue(Point& a, ii b)
 {
@@ -112,12 +62,17 @@ string intToString(int x)
     return res;
 }
 
-User getUser(string line)
+User getUser(string line, bool accountLogedIn, User oldman)
 {
     User user;
     stringstream s(line);
     string buf;
 
+    if (accountLogedIn) {
+        getline(s, buf, ',');
+        if (oldman.player.account != buf.c_str())
+            return user;
+    }
     getline(s, buf, ',');
     user.fileName = buf;
 
@@ -142,7 +97,7 @@ User getUser(string line)
     getline(s, buf, ',');
     getline(s, buf, ',');
     user.points = atoi(buf.c_str());
-
+ 
     getline(s, buf, ',');
     user.level = atoi(buf.c_str());
 
@@ -155,14 +110,14 @@ User getUser(string line)
 void init(Snake& snake, Board& board, Point& startPoint, int Direct)
 {
     Point spawnPoint;
-    string address = "Level/";
-    address += intToString(board.level);
+    //string address = "Level/";
+    string address = intToString(board.level);
     address += ".txt";
     ifstream fin(address.c_str());
     fin >> board.hei >> board.wid;
-    board.viewBoard = new int* [20];//board.hei];
+    board.viewBoard = new int* [board.hei];
     for (int i = 0; i < board.hei; i++)
-        board.viewBoard[i] = new int[60];//board.wid];
+        board.viewBoard[i] = new int[board.wid];
 
     for (int i = 0; i < board.hei; i++)
     {
@@ -233,7 +188,7 @@ void init(Snake& snake, Board& board, Point& startPoint, int Direct)
     board.updated = false;
 }
 
-vector<User> displayFiles()
+vector<User> displayFiles(bool accountLogedIn, User& user)
 {
     ifstream ifs("out.txt");
     vector<User> users;
@@ -248,19 +203,20 @@ vector<User> displayFiles()
         string line;
         while (getline(ifs, line))
         {
-            users.push_back(getUser(line));
+            users.push_back(getUser(line, accountLogedIn, user));
+            if (users[users.size() - 1].points == -858993460 && users[users.size() - 1].level == -858993460)
+                users.pop_back();
         }
     }
-    for (int i = 0; i < users.size(); i++)
-        cout << "PLAYER NAME: " << users[i].fileName << " - Scores: " << users[i].points << " - Level: " << users[i].level << endl;
+    for (int i = 0; i < users.size(); i++) {
+            cout << "PLAYER NAME: " << users[i].fileName << " - Scores: " << users[i].points << " - Level: " << users[i].level << endl;
+    }
     ifs.close();
     return users;
 }
 
-void saveFiles(Snake snake, Board board, User user)
+void saveFiles(Snake snake, Board board, User& user, bool accountLogedIn)
 {
-    // (T�n File)-t?a d? x c?a r?n-t?a d? y c?a r?n-d? d�i c?a r?n-di?m-level
-    // T�n File,({x, y}{x,y}...{x,y})(T?a d? c�c di?m tr�n th�n r?n, d?u r?n l� {x,y} d?u ti�n),di?m,level
     bool beFound = false;
     int position = 0;
     string temp_name = user.fileName;
@@ -310,6 +266,10 @@ void saveFiles(Snake snake, Board board, User user)
             ofs << allUsersFromFile[i] << endl;
         else
         {
+            //if (accountLogedIn)
+                //AI DO TIM CACH KHI CO TAI KHAON DANG NHAP THI LUU RA .TXT LA AKILE,akiLe,({12,17}{11,17}),140,5,1 VOI AKILE LA TEN TAI KHOAN DI
+                //TEN TAI KHOAN LUU O user.player.account dang char[20]
+                //ofs << user.player.account;
             ofs << user.fileName << ",(";
             for (int i = 0; i < snake.body.size(); i++)
                 ofs << "{" << snake.body[i].x << "," << snake.body[i].y << "}";
@@ -337,11 +297,11 @@ void pauseGame()
     cout << "Press (Z) to save file, or press WASD to continue.";
 }
 
-int getDirection(Snake snake, bool isPausing, Board board, User user)
+int getDirection(Snake snake, bool isPausing, Board board, User user, bool accountLogedIn)
 {
     int direct = snake.direction;
     if (snake.body.size() == 1)
-        saveFiles(snake, board, user);
+        saveFiles(snake, board, user, accountLogedIn);
     if (kbhit()) // Kiem tra nhan keyboard
     {
         char key = getch(); // Lay key
@@ -366,7 +326,7 @@ int getDirection(Snake snake, bool isPausing, Board board, User user)
             pauseGame();
             char _key = getch();
             if (toupper(_key) == 'Z')
-                saveFiles(snake, board, user);
+                saveFiles(snake, board, user, accountLogedIn);
             direct = 112;
         }
     }
@@ -681,14 +641,14 @@ void deleteObj(Snake& snake, Board& board)
     board.gate.clear();
 }
 
-void process(Snake& snake, Board& board, User user, Point& startPoint)
+void process(Snake& snake, Board& board, User user, Point& startPoint, bool accountLogedIn)
 {
     int preS = board.ss;
     bool isPausing = false;
 
     while (board.game_active)
     {
-        snake.direction = getDirection(snake, isPausing, board, user);
+        snake.direction = getDirection(snake, isPausing, board, user, accountLogedIn);
         if (snake.direction != 112)
         {
             isPausing = false;
@@ -791,7 +751,7 @@ int main() {
         clearScreen();
         system("color f0");
         bool isNewUser = true;
-        vector<User> users = displayFiles();
+        vector<User> users = displayFiles(accountLogedIn, user);
         User user;
         cout << "Nhap ten FILE: "; getline(cin, user.fileName);
 
@@ -800,7 +760,39 @@ int main() {
         ifstream ifs("out.txt");
         if (ifs.fail())
             return 0;
-        else
+        else if (!accountLogedIn)
+        {
+            int n = users.size();
+            for (int i = 0; i < n; i++)
+            {
+                if (user.fileName == users[i].fileName)
+                {
+                    isNewUser = false;
+                    user = users[i];
+                    break;
+                }
+            }
+            if (!isNewUser)
+            {
+                board.level = user.level;
+                board.score = user.points;
+                snake.head = user.bodyOfSnake[0];
+                user.bodyOfSnake.erase(user.bodyOfSnake.begin());
+                snake.body = user.bodyOfSnake;
+                startPoint = snake.head;
+            }
+            else {
+                firstTime = true;
+                board.level = 1;
+                board.score = 0;
+                snake.head = { 5, 5 };
+                snake.body.push_back({ 5, 5 });
+                startPoint = snake.head;
+                user.direct = 1;
+            }
+            ifs.close();
+        }
+        else if (accountLogedIn)
         {
             int n = users.size();
             for (int i = 0; i < n; i++)
@@ -837,7 +829,7 @@ int main() {
             system("color f0");
             board.game_active = true;
             init(snake, board, startPoint, user.direct);
-            process(snake, board, user, startPoint);
+            process(snake, board, user, startPoint, accountLogedIn);
             //Neu choi thang
             if (board.isWin)
                 board.level++;
@@ -853,7 +845,7 @@ int main() {
                 cout << "Press (Z) to save the game or others key to go back to menu.";
                 char _key = getch();
                 if (toupper(_key) == 'Z')
-                    saveFiles(snake, board, user);
+                    saveFiles(snake, board, user, accountLogedIn);
                 break;
             }
         }
