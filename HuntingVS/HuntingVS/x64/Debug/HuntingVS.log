@@ -1,0 +1,12 @@
+﻿  HuntingVS.cpp
+D:\HCMUS\Ky thuat lap trinh\Hunting_3\HuntingGame\HuntingVS\HuntingVS\HuntingVS.cpp(128,35): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
+D:\HCMUS\Ky thuat lap trinh\Hunting_3\HuntingGame\HuntingVS\HuntingVS\HuntingVS.cpp(134,56): warning C4267: '-=': conversion from 'size_t' to 'int', possible loss of data
+D:\HCMUS\Ky thuat lap trinh\Hunting_3\HuntingGame\HuntingVS\HuntingVS\HuntingVS.cpp(136,56): warning C4267: '-=': conversion from 'size_t' to 'int', possible loss of data
+D:\HCMUS\Ky thuat lap trinh\Hunting_3\HuntingGame\HuntingVS\HuntingVS\HuntingVS.cpp(229,42): warning C4267: '=': conversion from 'size_t' to 'int', possible loss of data
+D:\HCMUS\Ky thuat lap trinh\Hunting_3\HuntingGame\HuntingVS\HuntingVS\HuntingVS.cpp(293,39): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
+D:\HCMUS\Ky thuat lap trinh\Hunting_3\HuntingGame\HuntingVS\HuntingVS\HuntingVS.cpp(397,5): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
+D:\HCMUS\Ky thuat lap trinh\Hunting_3\HuntingGame\HuntingVS\HuntingVS\HuntingVS.cpp(480,40): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
+D:\HCMUS\Ky thuat lap trinh\Hunting_3\HuntingGame\HuntingVS\HuntingVS\HuntingVS.cpp(585,31): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
+D:\HCMUS\Ky thuat lap trinh\Hunting_3\HuntingGame\HuntingVS\HuntingVS\HuntingVS.cpp(608,36): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
+D:\HCMUS\Ky thuat lap trinh\Hunting_3\HuntingGame\HuntingVS\HuntingVS\HuntingVS.cpp(805,33): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
+  HuntingVS.vcxproj -> D:\HCMUS\Ky thuat lap trinh\Hunting_3\HuntingGame\HuntingVS\x64\Debug\HuntingVS.exe
