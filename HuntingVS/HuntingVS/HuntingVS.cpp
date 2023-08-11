@@ -267,7 +267,8 @@ void saveFiles(Snake snake, Board board, User& user, bool accountLogedIn)
         else
         {
             //if (accountLogedIn)
-                //AI DO TIM CACH KHI CO TAI KHAON DANG NHAP THI LUU RA .TXT LA AKILE,akiLe,({12,17}{11,17}),140,5,1 VOI AKILE LA TEN TAI KHOAN DI
+                //AI DO TIM CACH KHI CO TAI KHAON DANG NHAP THI LUU RA .TXT LA AKILE,akiLe,({12,17}{11,17}),140,5,1 VOI AKILE LA TEN TAI KHOAN 
+                //LUU LA akiLe,({12,17}{11,17}),140,5,1,AKILE cung duoc => okie
                 //TEN TAI KHOAN LUU O user.player.account dang char[20]
                 //ofs << user.player.account;
             ofs << user.fileName << ",(";
@@ -754,7 +755,6 @@ int main() {
         vector<User> users = displayFiles(accountLogedIn, user);
         User user;
         cout << "Nhap ten FILE: "; getline(cin, user.fileName);
-
         set_cursor(false);
 
         ifstream ifs("out.txt");

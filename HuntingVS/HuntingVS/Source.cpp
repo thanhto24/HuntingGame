@@ -44,13 +44,6 @@ void printAccChoice(int Choice)
     int directX = 83, directY = 19;
     TextColor(BlackW);
     title();
-    /*gotoxy(0,9);
-    cout << "\t\t\t\t\t\t\t\t __________  .__   __                       .__            "<< endl;
-    cout << "\t\t\t\t\t\t\t\t \\______   \\ |__| |  | __ _____      ____   |  |__    __ __ "<< endl;
-    cout << "\t\t\t\t\t\t\t\t  |     ___/ |  | |  |/ / \\__  \\   _/ ___\\  |  |  \\  |  |  \\"<< endl;
-    cout << "\t\t\t\t\t\t\t\t  |    |     |  | |    <   / __ \\_ \\  \\___  |   Y  \\ |  |  /"<< endl;
-    cout << "\t\t\t\t\t\t\t\t  |____|     |__| |__|_ \\ /____  /  \\___  > |___|  / |____/ "<< endl;
-    cout << "\t\t\t\t\t\t\t\t                       \\/      \\/       \\/       \\/        "<< endl;*/
 
     //244 = 15*16 + 4 red text white background
     TextColor(RW);
@@ -238,9 +231,9 @@ void signUp(string FileName)
     //4 = 0*16 + 4 red text black background
     TextColor(RW);
     gotoxy(directX - 8, directY + 15);
-    //cout << "Username must be LESS than 16 characters";
+    cout << "Username must be LESS than 20 characters.";
     gotoxy(directX - 8, directY + 16);
-    //cout << "Password is NO MORE THAN 14 characters";
+    cout << "Password must be LESS than 20 characters.";
 
     //244 = 15*16 + 4 red text white background
     TextColor(RW);
@@ -985,7 +978,7 @@ number =
 15 : Bright white
 
 int color = number*16                  +       number
-            (this is background color)       (and this is test color)
+            (this is background color)       (and this is text color)
 */
 void TextColor(int color) {
     HANDLE colo;
