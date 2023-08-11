@@ -704,7 +704,7 @@ void process(Snake& snake, Board& board, User &user, Point& startPoint, bool acc
         snake.head = { 5, 5 };
         snake.body.push_back({ 5, 5 });
         startPoint = snake.head;
-        user.direct = 1;
+        user.direct = 1; 
         saveFiles(snake, board, user, accountLogedIn);
         cout << "You are loser!";
     }
