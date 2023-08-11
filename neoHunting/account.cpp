@@ -68,8 +68,8 @@ void printAccChoice(int Choice)
             gotoxy(directX - 5, directY);
             TextColor(BlackW);
             cout << "  << Play as Guest >>  " << endl;
-            gotoxy(directX - 6, directY + 1);
-            cout << "   (Data will be lost) " << endl;
+            /*gotoxy(directX - 6, directY + 1);
+            cout << "   (Data will be lost) " << endl;*/
             printChoiceBox(directX, directY);
 
             //244 = 15*16 + 4 red text white background
@@ -185,7 +185,7 @@ void selectAccChoice(int &roundSelect, int &Choice)
             	Choice = 1;
             break;
         }        
-        case Space:     //accept choice
+        case 13:     //accept choice
         {
             if (Choice == 1)
             {
@@ -283,7 +283,7 @@ void signUp(string FileName)
         TextColor(BlackW);
         gotoxy(directX, directY + 22);
         cout << "Welcome New Player             ";     // sign up successfully
-        Sleep(2000);
+        Sleep(500);
         clearScreen();
 	    
 	    // open file to store new user's account
@@ -373,7 +373,7 @@ void signIn(string FileName, User &oldMan, unsigned int &index)
             signUp(FileName);                                   
             signIn(FileName, oldMan, index);
         }
-        else if (button == Space)
+        else if (button == 13)
         {
             clearScreen();
             signIn(FileName, oldMan, index);

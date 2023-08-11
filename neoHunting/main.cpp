@@ -779,7 +779,7 @@ int main(){
     gotoxy(79, 38);
     cout << "Use arrow key to move.";
     gotoxy(78, 39);
-    cout << "Press SPACE for choosing.";
+    cout << "Press ENTER for choosing.";
     generateAccScreen(roundSelect, Choice, FileName, user, index);
     
     if(roundSelect == -1)

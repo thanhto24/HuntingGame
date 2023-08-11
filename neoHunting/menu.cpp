@@ -25,7 +25,7 @@ void generateMenu (int &roundSelect, int Choice, string FileName)
         gotoxy(79, 38);
         cout << "Use arrow key to move.";
         gotoxy(78, 39);
-        cout << "Press SPACE for choosing.";
+        cout << "Press ENTER for choosing.";
 
         //out while loop
         if (roundSelect < 0)
@@ -62,7 +62,7 @@ void getEvents(int &roundSelect, int &Choice)
                     break;
                 }
                 //to select
-                case Space:
+                case 13:
                 {
                     if (Choice == 1)
                     {
@@ -188,7 +188,7 @@ void printMenu(int roundSelect, int Choice, string FileName)
                 gotoxy(directX - 4, 22);
 			    //244 = 15*16 + 4 red text white background
 			    TextColor(RW);
-                cout << "   LeaderBoard   " << endl;
+			    cout << "  Play new file  " << endl;
 
                 gotoxy(directX - 4, 26);
                 cout << "     Credit     " << endl;
@@ -211,7 +211,7 @@ void printMenu(int roundSelect, int Choice, string FileName)
                 printMenuBox (directX - 2, directY + 2);
 			    TextColor(GreenW);
                 gotoxy(directX - 4, 22);
-                cout << "<< LeaderBoard >>  " << endl;
+                cout << "<<Play new file>>  " << endl;
 
                 gotoxy(directX - 4, 26);
 			    //244 = 15*16 + 4 red text white background
@@ -233,7 +233,7 @@ void printMenu(int roundSelect, int Choice, string FileName)
                 cout << "      Play       " << endl;
 
                 gotoxy(directX - 4, 22);
-                cout << "   LeaderBoard   " << endl;
+                cout << "  Play new file  " << endl;
 
 			    TextColor(boxColor);
                 printMenuBox (directX - 2, directY + 6);
@@ -257,7 +257,7 @@ void printMenu(int roundSelect, int Choice, string FileName)
                 cout << "      Play        " << endl;
 
                 gotoxy(directX - 4, 22);
-                cout << "   LeaderBoard    " << endl;
+                cout << "  Play new file   " << endl;
 
                 gotoxy(directX - 4, 26);
                 cout << "     Credit       " << endl;
