@@ -794,7 +794,7 @@ int main(){
     Point startPoint = {-1,  -1};
 
     HWND hWnd=GetConsoleWindowNT();
-    MoveWindow(hWnd, 0, 0, 1450, 760,TRUE);
+    MoveWindow(hWnd, 0, 0, 1450, 700,TRUE);
     ShowScrollbar(0);
     DisableResizeWindow();
     system("color f0");
@@ -857,7 +857,7 @@ int main(){
 	    ifstream ifs("out.txt");
 	    if (ifs.fail())
 	        return 0;
-	    else
+	    else 
 	    {
 	        int n = users.size();
 	        for (int i = 0; i < n; i++)
@@ -878,10 +878,17 @@ int main(){
 	            snake.body = user.bodyOfSnake;
 	            startPoint = snake.head;
 	        }
-	        else
-	            board.level = 1;
-	        ifs.close();
-		}
+	        else{
+	        	firstTime = true;
+				board.level = 1;
+				board.score = 0;
+				snake.head = {5, 5};
+				snake.body.push_back( {5, 5} );
+				startPoint = snake.head;
+				user.direct = 1;
+			}
+	        ifs.close();    
+	    }
     	while(1){
     		clearScreen();
     		system("color f0");
@@ -893,8 +900,8 @@ int main(){
 	            board.level ++;
 	        
 	        //Neu choi dang Guest thi luc moi vao choi chtr se thong bao thua chu ko chay chuong trinh choi nen lam dieu kien tranh
-	        //else if (!board.isWin && firstTime && !accountLogedIn)
-	        	//firstTime = false;
+	        else if (!board.isWin && firstTime && isNewUser)
+	        	firstTime = false;
 	        //else if (!board.isWin && !firstTime){
 	        //Neu choi thua
 	        else{
