@@ -163,6 +163,7 @@ void init(Snake& snake, Board& board, Point& startPoint, int Direct)
     }
     fin.close();
     board.game_active = true;
+    board.game_active = true;
     //spawnPoint = { 5,5 };
     setValue(snake.head, spawnPoint);
     snake.body.push_back(snake.head);
@@ -195,7 +196,7 @@ vector<User> displayFiles(bool accountLogedIn, User& user)
 
     if (ifs.fail())
     {
-        cout << "Error opening file: out,txt" << endl;
+        cout << "Error opening file: out.txt" << endl;
         return users;
     }
     else if (!ifs.eof())
@@ -226,7 +227,7 @@ void saveFiles(Snake snake, Board board, User& user, bool accountLogedIn)
 
     if (ifs.fail())
     {
-        cout << "Error opening file: out.txt" << endl;
+        cout << "Error opening file: out.txt 123" << endl;
         return;
     }
     if (!ifs.eof())
@@ -256,7 +257,7 @@ void saveFiles(Snake snake, Board board, User& user, bool accountLogedIn)
 
     if (ofs.fail())
     {
-        cout << "Error opening file: out.txt" << endl;
+        cout << "Error opening file: out.txt 456" << endl;
         return;
     }
 
@@ -285,7 +286,7 @@ void pauseGame()
     for (int i = 0; i < 16; i++)
     {
         gotoxy(20, i + 2);
-        for (int j = 0; j < 50; j++)
+        for (int j = 0; j < 50; j++)    
         {
             TextColor(227);
             cout << " ";
@@ -303,7 +304,7 @@ int getDirection(Snake snake, bool isPausing, Board board, User user, bool accou
     if (snake.body.size() == 1)
         saveFiles(snake, board, user, accountLogedIn);
     if (kbhit()) // Kiem tra nhan keyboard
-    {
+    {  
         char key = getch(); // Lay key
 
         if (tolower(key) != 'p')
@@ -348,10 +349,13 @@ void updateBoard(Board& board)
     }
     board.updated = true;
 }
+void eatAndGrown(Snake& snake, const Board board);
 void move(Snake& snake, Board& board, Point& startPoint)
 {
-
+    if (snake.body.size() == 0)
+        return;
     board.viewBoard[snake.body[snake.body.size() - 1].y][snake.body[snake.body.size() - 1].x] = 0;
+ 
     setValue(snake.tail, snake.body[snake.body.size() - 1]);
 
     for (int i = snake.body.size() - 1; i > 0; i--)
@@ -435,16 +439,20 @@ void move(Snake& snake, Board& board, Point& startPoint)
         }
     }
     // dinh boom
+    srand(time(NULL));
     if (board.viewBoard[snake.head.y][snake.head.x] == 99)
     {
-        int len = snake.body.size() / 2;
-        snake.turnRed = true;
-
-        for (int i = 0; i <= len; i++)
+        int r = rand() % 10;
+        if (r % 2 == 0)
         {
+            snake.feed = true;
+            eatAndGrown(snake, board);
+        }
+        else
+        {
+            snake.turnRed = true;
+            board.score -= 300;
             board.viewBoard[snake.body[snake.body.size() - 1].y][snake.body[snake.body.size() - 1].x] = 0;
-            board.score -= 100;
-            snake.body.pop_back();
         }
     }
     if (board.score >= board.scoreToPass || board.updated)
@@ -641,7 +649,7 @@ void deleteObj(Snake& snake, Board& board)
     board.gate.clear();
 }
 
-void process(Snake& snake, Board& board, User user, Point& startPoint, bool accountLogedIn)
+void process(Snake& snake, Board& board, User& user, Point& startPoint, bool accountLogedIn)
 {
     int preS = board.ss;
     bool isPausing = false;
@@ -677,7 +685,22 @@ void process(Snake& snake, Board& board, User user, Point& startPoint, bool acco
     else
     {
         startPoint = { -1, -1 };
-        cout << "You are loser!";
+        cout << "You are loser!" << endl;
+        for (int i = 0; i < board.hei; i++)
+        {
+            for (int j = 0; j < board.wid; j++)
+            {
+                if (board.viewBoard[i][j] >= 3 && board.viewBoard[i][j] <= 6)
+                {
+                    user.bodyOfSnake.clear();
+                    snake.body.clear();
+                    snake.body.push_back({ i, j });
+                    saveFiles(snake, board, user, accountLogedIn);
+                    break;
+                }
+            }
+        }
+        cout << "siuuu" << endl;
     }
     deleteObj(snake, board);
 }
@@ -711,7 +734,7 @@ int main() {
     if (roundSelect == -1)
         accountLogedIn = false;
 
-    //Truong hop khon dang nhap
+    //Truong hop khong dang nhap
     if (!accountLogedIn) {
         board.level = 1;
         board.score = 0;
@@ -842,10 +865,10 @@ int main() {
             else {
                 if (!accountLogedIn)
                     board.level = 1;
-                cout << "Press (Z) to save the game or others key to go back to menu.";
+                /*cout << "Press (Z) to save the game or others key to go back to menu." << endl;
                 char _key = getch();
                 if (toupper(_key) == 'Z')
-                    saveFiles(snake, board, user, accountLogedIn);
+                    saveFiles(snake, board, user, accountLogedIn);*/
                 break;
             }
         }
