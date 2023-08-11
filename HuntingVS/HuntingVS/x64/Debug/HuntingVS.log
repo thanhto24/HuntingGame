@@ -1,13 +1,13 @@
 ﻿  HuntingVS.cpp
-D:\HCMUS\Ky thuat lap trinh\Hunting_3\HuntingGame\HuntingVS\HuntingVS\HuntingVS.cpp(83,35): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
-D:\HCMUS\Ky thuat lap trinh\Hunting_3\HuntingGame\HuntingVS\HuntingVS\HuntingVS.cpp(89,56): warning C4267: '-=': conversion from 'size_t' to 'int', possible loss of data
-D:\HCMUS\Ky thuat lap trinh\Hunting_3\HuntingGame\HuntingVS\HuntingVS\HuntingVS.cpp(91,56): warning C4267: '-=': conversion from 'size_t' to 'int', possible loss of data
-D:\HCMUS\Ky thuat lap trinh\Hunting_3\HuntingGame\HuntingVS\HuntingVS\HuntingVS.cpp(184,42): warning C4267: '=': conversion from 'size_t' to 'int', possible loss of data
-D:\HCMUS\Ky thuat lap trinh\Hunting_3\HuntingGame\HuntingVS\HuntingVS\HuntingVS.cpp(249,39): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
-D:\HCMUS\Ky thuat lap trinh\Hunting_3\HuntingGame\HuntingVS\HuntingVS\HuntingVS.cpp(357,5): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
-D:\HCMUS\Ky thuat lap trinh\Hunting_3\HuntingGame\HuntingVS\HuntingVS\HuntingVS.cpp(440,40): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
-D:\HCMUS\Ky thuat lap trinh\Hunting_3\HuntingGame\HuntingVS\HuntingVS\HuntingVS.cpp(545,31): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
-D:\HCMUS\Ky thuat lap trinh\Hunting_3\HuntingGame\HuntingVS\HuntingVS\HuntingVS.cpp(568,36): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
-D:\HCMUS\Ky thuat lap trinh\Hunting_3\HuntingGame\HuntingVS\HuntingVS\HuntingVS.cpp(765,33): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
-D:\HCMUS\Ky thuat lap trinh\Hunting_3\HuntingGame\HuntingVS\HuntingVS\HuntingVS.cpp(797,33): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
-  HuntingVS.vcxproj -> D:\HCMUS\Ky thuat lap trinh\Hunting_3\HuntingGame\HuntingVS\x64\Debug\HuntingVS.exe
+C:\Users\thaih\Documents\K22\Nam_1\HK3\ToP\Project\snakeOnVS\HuntingGame\HuntingVS\HuntingVS\HuntingVS.cpp(83,13): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
+C:\Users\thaih\Documents\K22\Nam_1\HK3\ToP\Project\snakeOnVS\HuntingGame\HuntingVS\HuntingVS\HuntingVS.cpp(89,56): warning C4267: '-=': conversion from 'size_t' to 'int', possible loss of data
+C:\Users\thaih\Documents\K22\Nam_1\HK3\ToP\Project\snakeOnVS\HuntingGame\HuntingVS\HuntingVS\HuntingVS.cpp(91,56): warning C4267: '-=': conversion from 'size_t' to 'int', possible loss of data
+C:\Users\thaih\Documents\K22\Nam_1\HK3\ToP\Project\snakeOnVS\HuntingGame\HuntingVS\HuntingVS\HuntingVS.cpp(185,37): warning C4267: '=': conversion from 'size_t' to 'int', possible loss of data
+C:\Users\thaih\Documents\K22\Nam_1\HK3\ToP\Project\snakeOnVS\HuntingGame\HuntingVS\HuntingVS\HuntingVS.cpp(250,14): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
+C:\Users\thaih\Documents\K22\Nam_1\HK3\ToP\Project\snakeOnVS\HuntingGame\HuntingVS\HuntingVS\HuntingVS.cpp(361,16): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
+C:\Users\thaih\Documents\K22\Nam_1\HK3\ToP\Project\snakeOnVS\HuntingGame\HuntingVS\HuntingVS\HuntingVS.cpp(442,15): warning C4244: 'argument': conversion from 'time_t' to 'unsigned int', possible loss of data
+C:\Users\thaih\Documents\K22\Nam_1\HK3\ToP\Project\snakeOnVS\HuntingGame\HuntingVS\HuntingVS\HuntingVS.cpp(553,12): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
+C:\Users\thaih\Documents\K22\Nam_1\HK3\ToP\Project\snakeOnVS\HuntingGame\HuntingVS\HuntingVS\HuntingVS.cpp(576,12): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
+C:\Users\thaih\Documents\K22\Nam_1\HK3\ToP\Project\snakeOnVS\HuntingGame\HuntingVS\HuntingVS\HuntingVS.cpp(788,19): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
+C:\Users\thaih\Documents\K22\Nam_1\HK3\ToP\Project\snakeOnVS\HuntingGame\HuntingVS\HuntingVS\HuntingVS.cpp(820,19): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
+  HuntingVS.vcxproj -> C:\Users\thaih\Documents\K22\Nam_1\HK3\ToP\Project\snakeOnVS\HuntingGame\HuntingVS\x64\Debug\HuntingVS.exe
