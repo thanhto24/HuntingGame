@@ -867,7 +867,7 @@ int main() {
             //Neu choi dang Guest thi luc moi vao choi chtr se thong bao thua chu ko chay chuong trinh choi nen lam dieu kien tranh
             else if (!board.isWin && firstTime && isNewUser)
                 firstTime = false;
-            //else if (!board.isWin && !firstTime){
+            //else if (!board.isWin && !firstTime){ 
             //Neu choi thua
             else {
                 if (!accountLogedIn)
