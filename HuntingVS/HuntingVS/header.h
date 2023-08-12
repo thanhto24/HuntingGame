@@ -13,16 +13,16 @@
 #include <iomanip>
 #include <new>
 #include <fstream>
-//#include <chrono>
+#include <chrono>
 #include <thread>
 #include <windows.h>
 #include <mmsystem.h>
 
 #pragma pack (1)
-//#pragma comment(lib, "winmm.lib")
+#pragma comment(lib, "winmm.lib")
 
 using namespace std;
-//using namespace std::chrono;
+using namespace std::chrono;
 
 #define ii pair<int, int>
 #define iii pair<ii, int>
@@ -54,6 +54,7 @@ struct Snake
 
 struct Board
 {
+    string str;
     bool game_active;
     int** viewBoard;
     int hei, wid;
@@ -136,6 +137,7 @@ void ShowScrollbar(BOOL Show);
 void clearScreen();
 void gotoxy(SHORT x, SHORT y);
 void TextColor(int color);
+void doTab(int n);
 
 //functions for showing Menu Choice box
 void title();
@@ -145,3 +147,5 @@ void printChoiceBox(int directX, int directY);
 void deleteChoiceBox(int directX, int directY);
 void printMenuBox(int directX, int directY);
 void deleteMenuBox(int directX, int directY);
+void blinkText(int blinkCount, string str);
+void loadingBar();

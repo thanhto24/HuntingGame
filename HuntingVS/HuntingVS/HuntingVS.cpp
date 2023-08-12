@@ -126,7 +126,6 @@ void init(Snake& snake, Board& board, Point& startPoint, int Direct)
             fin >> board.viewBoard[i][j];
             if (board.viewBoard[i][j] >= 3 && board.viewBoard[i][j] <= 6)
             {
-                // cout << startPoint.x << " " << startPoint.y << " " << Direct << endl;
                 if (startPoint.x != -1 && startPoint.y != -1)
                 {
                     snake.direction = Direct;
@@ -163,9 +162,17 @@ void init(Snake& snake, Board& board, Point& startPoint, int Direct)
     }
     fin.close();
     board.game_active = true;
-    //spawnPoint = { 5,5 };
     setValue(snake.head, spawnPoint);
     snake.body.push_back(snake.head);
+
+    Point nextPoint;
+    int x_direct[4] = { -1, 1, 0, 0 };
+    int y_direct[4] = { 0, 0, -1, 1 };
+    for (int i = 1; i <= 5; i++)
+    {
+        setValue(nextPoint, mp(spawnPoint.y - i * y_direct[snake.direction], spawnPoint.x - i * x_direct[snake.direction]));
+        snake.body.push_back(nextPoint);
+    }
 
     board.viewBoard[snake.head.y][snake.head.x] = -1;
 
@@ -267,8 +274,7 @@ void saveFiles(Snake snake, Board board, User& user, bool accountLogedIn)
         else
         {
             //if (accountLogedIn)
-                //AI DO TIM CACH KHI CO TAI KHAON DANG NHAP THI LUU RA .TXT LA AKILE,akiLe,({12,17}{11,17}),140,5,1 VOI AKILE LA TEN TAI KHOAN 
-                //LUU LA akiLe,({12,17}{11,17}),140,5,1,AKILE cung duoc => okie
+                //AI DO TIM CACH KHI CO TAI KHAON DANG NHAP THI LUU RA .TXT LA AKILE,akiLe,({12,17}{11,17}),140,5,1 VOI AKILE LA TEN TAI KHOAN DI
                 //TEN TAI KHOAN LUU O user.player.account dang char[20]
                 //ofs << user.player.account;
             ofs << user.fileName << ",(";
@@ -283,18 +289,18 @@ void saveFiles(Snake snake, Board board, User& user, bool accountLogedIn)
 
 void pauseGame()
 {
-    for (int i = 0; i < 16; i++)
+    for (int i = 0; i < 20; i++)
     {
-        gotoxy(20, i + 2);
+        gotoxy(35, i + 6);
         for (int j = 0; j < 50; j++)
         {
             TextColor(227);
-            cout << " ";
+            cout << ".";
         }
         cout << endl;
     }
     TextColor(14);
-    gotoxy(20, 2);
+    gotoxy(35, 6);
     cout << "Press (Z) to save file, or press WASD to continue.";
 }
 
@@ -309,25 +315,40 @@ int getDirection(Snake snake, bool isPausing, Board board, User user, bool accou
 
         if (tolower(key) != 'p')
         {
-            if (toupper(key) == 'A' || key == 75) // Di chuy?n tr�i
+            if (toupper(key) == 'A' || key == 75 || key == 37)// Di chuyển trái
+            {
+                PlaySound(TEXT("soundtrack\\move.wav"), NULL, SND_FILENAME | SND_ASYNC);
                 if (direct != 1)
                     direct = 0;
-            if (toupper(key) == 'D' || key == 77) // Di chuy?n ph?i
+            }
+            if (toupper(key) == 'D' || key == 77 || key == 39) // Di chuyển phải
+            {
+                PlaySound(TEXT("soundtrack\\move.wav"), NULL, SND_FILENAME | SND_ASYNC);
                 if (direct != 0)
                     direct = 1;
-            if (toupper(key) == 'W' || key == 72) // Di chuy?n l�n
+            }
+            if (toupper(key) == 'W' || key == 72 || key == 38) // Di chuyển lên
+            {
+                PlaySound(TEXT("soundtrack\\move.wav"), NULL, SND_FILENAME | SND_ASYNC);
                 if (direct != 3)
                     direct = 2;
-            if (toupper(key) == 'S' || key == 80) // Di chuy?n xu?ng
+            }
+            if (toupper(key) == 'S' || key == 80 || key == 40) // Di chuyển xuống
+            {
+                PlaySound(TEXT("soundtrack\\move.wav"), NULL, SND_FILENAME | SND_ASYNC);
                 if (direct != 2)
                     direct = 3;
+            }
         }
         if (tolower(key) == 'p' && !isPausing) // Nh?n p d? pause game
         {
             pauseGame();
             char _key = getch();
             if (toupper(_key) == 'Z')
+            {
+                PlaySound(TEXT("soundtrack\\enter.wav"), NULL, SND_FILENAME | SND_ASYNC);
                 saveFiles(snake, board, user, accountLogedIn);
+            }
             direct = 112;
         }
     }
@@ -349,6 +370,7 @@ void updateBoard(Board& board)
     }
     board.updated = true;
 }
+
 void move(Snake& snake, Board& board, Point& startPoint)
 {
 
@@ -441,6 +463,7 @@ void move(Snake& snake, Board& board, Point& startPoint)
         int len = snake.body.size() / 2;
         snake.turnRed = true;
 
+        PlaySound(TEXT("soundtrack\\wrong.wav"), NULL, SND_FILENAME | SND_ASYNC);
         for (int i = 0; i <= len; i++)
         {
             board.viewBoard[snake.body[snake.body.size() - 1].y][snake.body[snake.body.size() - 1].x] = 0;
@@ -467,7 +490,7 @@ void move(Snake& snake, Board& board, Point& startPoint)
     board.viewBoard[snake.head.y][snake.head.x] = -1;
 }
 
-const int snakeColor = 14;
+int snakeColor = 14;
 const int appleColor = 221;
 const int bigAppleColor = 238;
 const int wallColor = 68;
@@ -507,13 +530,13 @@ void draw(const Snake snake, const Board board)
             {
                 TextColor(wallColor);
                 SetConsoleOutputCP(65001);
-                cout << "��";
+                cout << "║║";
             }
             else if (board.viewBoard[i][j] == 2)
             {
                 TextColor(wallColor);
                 SetConsoleOutputCP(65001);
-                cout << "--";
+                cout << "══";
             }
             else if (board.viewBoard[i][j] >= 9 && board.viewBoard[i][j] <= 13)
             {
@@ -533,12 +556,115 @@ void draw(const Snake snake, const Board board)
             else
             {
                 TextColor(backgroundColor);
-                cout << "w ";
+                cout << "W ";
             }
             TextColor(basicColor);
         }
         cout << endl;
     }
+    SetConsoleOutputCP(65001);
+    TextColor(15 * 16 + 0);
+    cout << "╔══════════════════════════════════════════════════════════════════════════════════════════════════════════════════════╗" << endl;
+    cout << "║                                      VIETNAM NATIONAL UNIVERSITY IN HO CHI MINH CITY                                 ║" << endl;
+    cout << "║                                              HO CHI MINH UNIVERSITY OF SCIENCE                                       ║" << endl;
+    cout << "║                                               PROGRAMMING TECHNIQUES COURSES                                         ║" << endl;
+    cout << "║                                                 HUNTING SNAKE GAME PROJECT                                           ║" << endl;
+    cout << "║                                             PRODUCED BY STUDENTS FROM GROUP 02                                       ║" << endl;
+    cout << "║                                                      * * * * * * * * *                                               ║" << endl;
+    cout << "╚══════════════════════════════════════════════════════════════════════════════════════════════════════════════════════╝" << endl;
+    gotoxy(120, 0);
+    cout << "╔══════════════════════════════════╗" << endl;
+    gotoxy(120, 1);
+    cout << "║                                  ║" << endl;
+    gotoxy(120, 2);
+    cout << "║            ";
+    gotoxy(135, 2);
+    TextColor(15 * 16 + 12);
+    cout << "GROUP 02";
+    gotoxy(143, 2);
+    TextColor(15 * 16 + 0);
+    cout << "            ║" << endl;
+    gotoxy(120, 3);
+    cout << "║                                  ║" << endl;
+    gotoxy(120, 4);
+    cout << "║     22127174: NGO VAN KHAI       ║" << endl;
+    gotoxy(120, 5);
+    cout << "║     22127322: LE PHUOC PHAT      ║" << endl;
+    gotoxy(120, 6);
+    cout << "║     22127388: TO QUOC THANH      ║" << endl;
+    gotoxy(120, 7);
+    cout << "║     22127441: THAI HUYEN TUNG    ║" << endl;
+    gotoxy(120, 8);
+    cout << "║                                  ║" << endl;
+    gotoxy(120, 9);
+    cout << "╠══════════════════════════════════╣" << endl;
+    gotoxy(120, 10);
+    cout << "║                                  ║" << endl;
+    gotoxy(120, 11);
+    cout << "║           " << endl;
+    gotoxy(133, 11);
+    TextColor(15 * 16 + 12);
+    cout << "INSTRUCTIONS";
+    TextColor(15 * 16 + 0);
+    gotoxy(144, 11);
+    cout << "           ║" << endl;
+    gotoxy(120, 12);
+    cout << "║                                  ║" << endl;
+    gotoxy(120, 13);
+    cout << "║         W  or  ↑ : GO UP         ║" << endl;
+    gotoxy(120, 14);
+    cout << "║         A  or  → : TURN LEFT     ║" << endl;
+    gotoxy(120, 15);
+    cout << "║         S  or  ↓ : GO DOWN       ║" << endl;
+    gotoxy(120, 16);
+    cout << "║         D  or  ← : TURN RIGHT    ║" << endl;
+    gotoxy(120, 17);
+    cout << "║                                  ║" << endl;
+    gotoxy(120, 18);
+    cout << "╠══════════════════════════════════╣" << endl;
+    gotoxy(120, 19);
+    cout << "║                                  ║" << endl;
+    gotoxy(120, 20);
+    cout << "║        ";
+    gotoxy(129, 20);
+    TextColor(15 * 16 + 12);
+    cout << "CACULATING  SCORES";
+    gotoxy(147, 20);
+    TextColor(15 * 16 + 0);
+    cout << "        ║" << endl;
+    gotoxy(120, 21);
+    cout << "║                                  ║" << endl;
+    gotoxy(120, 22);
+    cout << "║    TOTAL SCORES: 100 / 100       ║" << endl;
+    gotoxy(120, 23);
+    cout << "║                                  ║" << endl;
+    gotoxy(120, 25);
+    cout << "║                                  ║" << endl;
+    gotoxy(120, 26);
+    cout << "╠══════════════════════════════════╣" << endl;
+    gotoxy(120, 27);
+    cout << "║                                  ║" << endl;
+    gotoxy(120, 28);
+    cout << "║              ";
+    gotoxy(135, 28);
+    TextColor(15 * 16 + 12);
+    cout << "RESULT";
+    gotoxy(141, 28);
+    TextColor(15 * 16 + 0);
+    cout << "              ║" << endl;
+    gotoxy(120, 29);
+    cout << "║                                  ║" << endl;
+    gotoxy(120, 31);
+    cout << "║                                  ║" << endl; 
+    gotoxy(120, 32);
+    cout << "╠══════════════════════════════════╣" << endl;
+    gotoxy(120, 33);
+    cout << "║                                  ║" << endl;
+    gotoxy(120, 36);
+    cout << "║                                  ║" << endl;
+    gotoxy(120, 37);
+    cout << "╚══════════════════════════════════╝" << endl;
+    gotoxy(0, 33);
 }
 
 bool outRangeGate(int y, int x, const Board board)
@@ -595,19 +721,12 @@ void spawnApple(Board& board, bool isBigApple)
 void eatAndGrown(Snake& snake, const Board board)
 {
     if (snake.feed)
+    {
         snake.body.push_back(snake.tail);
+        PlaySound(TEXT("soundtrack\\Hint.wav"), NULL, SND_FILENAME | SND_ASYNC);
+    }
     snake.feed = false;
 }
-// dinh boom
-// void eatLandmine(Snake &snake, const Board board)
-// {
-//     if (board.viewBoard[snake.head.y][snake.head.x] == 99)
-//     {
-//         TextColor(64);
-//         board.viewBoard[snake.body[snake.body.size() - 1].y][snake.body[snake.body.size() - 1].x] = 0;
-//         snake.body.pop_back();
-//     }
-// }
 
 int secondPassed(int h, int m, int s, int& preS, int& score)
 {
@@ -642,7 +761,7 @@ void deleteObj(Snake& snake, Board& board)
     board.gate.clear();
 }
 
-void process(Snake& snake, Board& board, User &user, Point& startPoint, bool accountLogedIn)
+void process(Snake& snake, Board& board, User user, Point& startPoint, bool accountLogedIn)
 {
     int preS = board.ss;
     bool isPausing = false;
@@ -652,6 +771,8 @@ void process(Snake& snake, Board& board, User &user, Point& startPoint, bool acc
         snake.direction = getDirection(snake, isPausing, board, user, accountLogedIn);
         if (snake.direction != 112)
         {
+            gotoxy(120, 30);
+            cout << "║         STILL WAITING ...        ║" << endl;
             isPausing = false;
             move(snake, board, startPoint);
             if (!board.game_active || board.isWin)
@@ -666,19 +787,48 @@ void process(Snake& snake, Board& board, User &user, Point& startPoint, bool acc
             if (!board.score)
                 break;
             eatAndGrown(snake, board);
-            cout << board.score << " / " << board.scoreToPass << "  " << endl;
+            gotoxy(120, 24);
+            if (board.score >= 0 && board.score < 10)
+                cout << "║    CURRENT SCORES: " << board.score << " / " << board.scoreToPass << "       ║" << endl;
+            else if (board.score >= 10 && board.score <= 99)
+                cout << "║    CURRENT SCORES: " << board.score << " / " << board.scoreToPass << "      ║" << endl;
+            else if (board.score >= 100 && board.score <= 999)
+                cout << "║    CURRENT SCORES: " << board.score << " / " << board.scoreToPass << "     ║" << endl;
+            else if (board.score >= 1000 && board.score <= 9999)
+                cout << "║    CURRENT SCORES: " << board.score << " / " << board.scoreToPass << "    ║" << endl;
+            else if (board.score >= 10000 && board.score <= 99999)
+                cout << "║    CURRENT SCORES: " << board.score << " / " << board.scoreToPass << "   ║" << endl;
+            else
+                cout << "║   CURRENT SCORES: " << board.score << " / " << board.scoreToPass << "   ║" << endl;
         }
         else
+        {
+            gotoxy(120, 30);
+            cout << "║         STILL WAITING ...        ║" << endl;
             isPausing = true;
+        }
     }
-    // system("cls");
-    // gotoxy(5, 5);
+    gotoxy(120, 30);
     if (board.isWin)
-        cout << "CONGRATULATION!";
+    }
+        cout << "║         YOU ARE A WINNER         ║" << endl;
+        PlaySound(TEXT("soundtrack\\win.wav"), NULL, SND_FILENAME | SND_LOOP | SND_ASYNC);
+    }
     else
     {
-        //startPoint = { -1, -1 };
-        //firstTime = true;
+        
+        // for (int i = 0; i < 10; i++)
+        // {
+        //     Sleep(10);
+        //     snakeColor = 20;
+        //     draw(snake, board);
+        //     snakeColor = 14;
+        //     draw(snake, board);
+        // }
+        // startPoint = {-1, -1};
+        string str = "║         YOU ARE A LOSER          ║";
+        // blinkText(5, str);
+        cout << str << endl;
         board.level = 1;
         board.score = 0;
         while (user.bodyOfSnake.size() != 0)
@@ -699,6 +849,7 @@ void process(Snake& snake, Board& board, User &user, Point& startPoint, bool acc
             }
         }
         fin.close();
+
         while (snake.body.size() != 0)
             snake.body.pop_back();
         snake.head = { 5, 5 };
@@ -706,7 +857,8 @@ void process(Snake& snake, Board& board, User &user, Point& startPoint, bool acc
         startPoint = snake.head;
         user.direct = 1; 
         saveFiles(snake, board, user, accountLogedIn);
-        cout << "You are loser!";
+        PlaySound(TEXT("soundtrack\\lose.wav"), NULL, SND_FILENAME | SND_LOOP | SND_ASYNC);
+
     }
     deleteObj(snake, board);
 }
@@ -721,14 +873,9 @@ int main() {
     Board board;
     Snake snake;
     Point startPoint = { -1,  -1 };
-    cout << "wait 3 sec";
-    Sleep(3000);
+    loadingBar();
     clearScreen();
 
-    //HWND hWnd = GetConsoleWindowNT();
-    //MoveWindow(hWnd, 0, 0, 1450, 700, TRUE);
-    //ShowScrollbar(0);
-    //DisableResizeWindow();
     system("color f0");
     TextColor(BlackW);
     gotoxy(79, 38);
@@ -740,7 +887,7 @@ int main() {
     if (roundSelect == -1)
         accountLogedIn = false;
 
-    //Truong hop khon dang nhap
+    //Truong hop khong dang nhap
     if (!accountLogedIn) {
         board.level = 1;
         board.score = 0;
@@ -783,12 +930,12 @@ int main() {
         vector<User> users = displayFiles(accountLogedIn, user);
         User user;
         cout << "Nhap ten FILE: "; getline(cin, user.fileName);
+
         set_cursor(false);
 
         ifstream ifs("out.txt");
         if (ifs.fail())
             return 0;
-        //Khi Play as Guest
         else if (!accountLogedIn)
         {
             int n = users.size();
@@ -819,8 +966,8 @@ int main() {
                 startPoint = snake.head;
                 user.direct = 1;
             }
+            ifs.close();
         }
-        //Khi play co dang nhap, phan nay de tam chu chua hieu chinh :(((((((((((((
         else if (accountLogedIn)
         {
             int n = users.size();
@@ -851,14 +998,29 @@ int main() {
                 startPoint = snake.head;
                 user.direct = 1;
             }
+            ifs.close();
         }
-        ifs.close();
         while (1) {
             clearScreen();
             system("color f0");
             board.game_active = true;
+            SetConsoleOutputCP(65001);
+            gotoxy(120, 34);
+            cout << "║            ";
+            gotoxy(134, 34);
+            TextColor(15 * 16 + 12);
+            cout << "CURRENT LEVEL";
+            gotoxy(147, 34);
+            TextColor(15 * 16 + 0);
+            cout << "        ║" << endl;
+            gotoxy(120, 35);
+            if (board.level < 10)
+                cout << "║                  0" << board.level << "              ║" << endl;
+            else
+                cout << "║                  " << board.level << "               ║" << endl;
             init(snake, board, startPoint, user.direct);
             process(snake, board, user, startPoint, accountLogedIn);
+
             //Neu choi thang
             if (board.isWin)
                 board.level++;
@@ -866,15 +1028,21 @@ int main() {
             //Neu choi dang Guest thi luc moi vao choi chtr se thong bao thua chu ko chay chuong trinh choi nen lam dieu kien tranh
             else if (!board.isWin && firstTime && isNewUser)
                 firstTime = false;
-            //else if (!board.isWin && !firstTime){ 
+            //else if (!board.isWin && !firstTime){
             //Neu choi thua
             else {
                 if (!accountLogedIn)
                     board.level = 1;
-                cout << "Press (Z) to save the game or others key to go back to menu.";
+                gotoxy(120, 34);
+                cout << "║      Press (Z) to SAVE FILE      ║" << endl;
+                gotoxy(120, 35);
+                cout << "║      Other keys to BACK MENU     ║" << endl;
                 char _key = getch();
                 if (toupper(_key) == 'Z')
+                {
+                    PlaySound(TEXT("soundtrack\\enter.wav"), NULL, SND_FILENAME | SND_ASYNC);
                     saveFiles(snake, board, user, accountLogedIn);
+                }
                 break;
             }
         }

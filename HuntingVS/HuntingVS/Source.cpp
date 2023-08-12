@@ -2,6 +2,7 @@
 
 void generateAccScreen(int& roundSelect, int Choice, string FileName, User& oldMan, unsigned int& index)
 {
+    PlaySound(TEXT("soundtrack\\menu.wav"), NULL, SND_FILENAME | SND_LOOP | SND_ASYNC);
     roundSelect = 0;
     TextColor(BlackW);
     while (true)
@@ -163,44 +164,51 @@ void selectAccChoice(int& roundSelect, int& Choice)
     switch (button)
     {
         TextColor(BlackW);
-    case KeyUp: //point to upper choice
-    {
-        Choice--;
-        if (Choice == 0)
-            Choice = 4;
-        break;
-    }
-    case KeyDown:   //point to below choice
-    {
-        Choice++;
-        if (Choice == 5)
-            Choice = 1;
-        break;
-    }
-    case 13:     //accept choice
-    {
-        if (Choice == 1)
+        case KeyUp: //point to upper choice
         {
-            roundSelect = -1;
+            Choice--;
+            if (Choice == 0)
+                Choice = 4;
+            PlaySound(TEXT("soundtrack\\move.wav"), NULL, SND_FILENAME | SND_ASYNC);
+            break;
         }
-        else if (Choice == 2)
+        case KeyDown:   //point to below choice
         {
-            roundSelect = 1;
+            Choice++;
+            if (Choice == 5)
+                Choice = 1;
+            PlaySound(TEXT("soundtrack\\move.wav"), NULL, SND_FILENAME | SND_ASYNC);
+            break;
         }
-        else if (Choice == 3)
+        case 13:     //accept choice
         {
-            roundSelect = 2;
+            if (Choice == 1)
+            {
+                PlaySound(TEXT("soundtrack\\enter.wav"), NULL, SND_FILENAME | SND_ASYNC);
+                roundSelect = -1;
+            }
+            else if (Choice == 2)
+            {
+                PlaySound(TEXT("soundtrack\\enter.wav"), NULL, SND_FILENAME | SND_ASYNC);
+                roundSelect = 1;
+            }
+            else if (Choice == 3)
+            {
+                PlaySound(TEXT("soundtrack\\enter.wav"), NULL, SND_FILENAME | SND_ASYNC);
+                roundSelect = 2;
+            }
+            else if (Choice == 4)
+            {
+                PlaySound(TEXT("soundtrack\\enter.wav"), NULL, SND_FILENAME | SND_ASYNC);
+                exit(0);
+            }
+            break;
         }
-        else if (Choice == 4)
+        case Esc:       //turn off console
         {
+            PlaySound(TEXT("soundtrack\\enter.wav"), NULL, SND_FILENAME | SND_ASYNC);
             exit(0);
         }
-        break;
-    }
-    case Esc:       //turn off console
-    {
-        exit(0);
-    }
     }
 }
 void signUp(string FileName)
@@ -231,9 +239,9 @@ void signUp(string FileName)
     //4 = 0*16 + 4 red text black background
     TextColor(RW);
     gotoxy(directX - 8, directY + 15);
-    cout << "Username must be LESS than 20 characters.";
+    cout << "Username must be LESS than 16 characters";
     gotoxy(directX - 8, directY + 16);
-    cout << "Password must be LESS than 20 characters.";
+    cout << "Password is NO MORE THAN 14 characters";
 
     //244 = 15*16 + 4 red text white background
     TextColor(RW);
@@ -364,11 +372,13 @@ void signIn(string FileName, User& oldMan, unsigned int& index)
             clearScreen();
             signUp(FileName);
             signIn(FileName, oldMan, index);
+            PlaySound(TEXT("soundtrack\\enter.wav"), NULL, SND_FILENAME | SND_ASYNC);
         }
         else if (button == 13)
         {
             clearScreen();
             signIn(FileName, oldMan, index);
+            PlaySound(TEXT("soundtrack\\enter.wav"), NULL, SND_FILENAME | SND_ASYNC);
         }
 
     }
@@ -536,6 +546,7 @@ void getEvents(int& roundSelect, int& Choice)
             Choice--;
             if (Choice == 0)
                 Choice = 4;
+            PlaySound(TEXT("soundtrack\\move.wav"), NULL, SND_FILENAME | SND_ASYNC);
             break;
         }
         //point to below choice
@@ -544,6 +555,7 @@ void getEvents(int& roundSelect, int& Choice)
             Choice++;
             if (Choice == 5)
                 Choice = 1;
+            PlaySound(TEXT("soundtrack\\move.wav"), NULL, SND_FILENAME | SND_ASYNC);
             break;
         }
         //to select
@@ -555,26 +567,33 @@ void getEvents(int& roundSelect, int& Choice)
                 roundSelect = 2;
                 Choice = 1;*/
                 roundSelect = -1;
+                PlaySound(TEXT("soundtrack\\enter.wav"), NULL, SND_FILENAME | SND_ASYNC);
             }
             else if (Choice == 2)
             {
                 //LeaderBoard
                 roundSelect = 4;
+                PlaySound(TEXT("soundtrack\\enter.wav"), NULL, SND_FILENAME | SND_ASYNC);
             }
             else if (Choice == 3)
             {
                 //Credit
                 roundSelect = 3;
+                PlaySound(TEXT("soundtrack\\enter.wav"), NULL, SND_FILENAME | SND_ASYNC);
             }
             else if (Choice == 4)
+            {
                 //Quit
                 exit(0);
+                PlaySound(TEXT("soundtrack\\enter.wav"), NULL, SND_FILENAME | SND_ASYNC);
+            }
             break;
         }
         case Esc:
         {
             //Quit
             exit(0);
+            PlaySound(TEXT("soundtrack\\enter.wav"), NULL, SND_FILENAME | SND_ASYNC);
             break;
         }
         }
@@ -637,6 +656,7 @@ void getEvents(int& roundSelect, int& Choice)
             clearScreen();
             roundSelect = 1;
             Choice = 1;
+            PlaySound(TEXT("soundtrack\\enter.wav"), NULL, SND_FILENAME | SND_ASYNC);
         }
         break;
     }
@@ -828,6 +848,7 @@ void printMenu(int roundSelect, int Choice, string FileName)
     case 3:
     {
         clearScreen();
+        PlaySound(TEXT("soundtrack\\menu.wav"), NULL, SND_FILENAME | SND_LOOP | SND_ASYNC);
         printCredit();
         break;
     }
@@ -839,6 +860,7 @@ void printMenu(int roundSelect, int Choice, string FileName)
         gotoxy(77, 29);
         TextColor(241);
         cout << "Press ESC to exit";
+        PlaySound(TEXT("soundtrack\\background1.wav"), NULL, SND_FILENAME | SND_LOOP | SND_ASYNC);
         //printLeaderBoard(FileName);
         break;
     }
@@ -978,7 +1000,7 @@ number =
 15 : Bright white
 
 int color = number*16                  +       number
-            (this is background color)       (and this is text color)
+            (this is background color)       (and this is test color)
 */
 void TextColor(int color) {
     HANDLE colo;
@@ -1201,3 +1223,45 @@ void deleteMenuBox(int directX, int directY)
     }
     cout << " ";
 }
+
+void doTab(int n)
+{
+    for (int i = 0; i < n; i++)
+        cout << "\t";
+}
+
+void blinkText(int blinkCount, string str) {
+    HANDLE console = GetStdHandle(STD_OUTPUT_HANDLE);
+    CONSOLE_SCREEN_BUFFER_INFO info;
+    GetConsoleScreenBufferInfo(console, &info);
+
+    for (int i = 0; i < blinkCount; i++) {
+        SetConsoleTextAttribute(console, BACKGROUND_INTENSITY | BACKGROUND_RED);
+        // printf("Nội dung chữ sáng đỏ\n");
+        gotoxy(120, 30);
+        cout << str;
+        Sleep(500); // Ngủ 0.5 giây
+
+        SetConsoleTextAttribute(console, info.wAttributes);
+        // printf("Nội dung chữ bình thường\n");
+        gotoxy(120, 30);
+        cout << str;
+        Sleep(500); // Ngủ 0.5 giây
+    }
+}
+
+void loadingBar()
+{
+    SetConsoleOutputCP(65001);
+    system("cls");
+    gotoxy(70, 16);
+    std::cout << "LOADING...";
+
+    gotoxy(50, 17);
+    for (int i = 0; i < 50; i++)
+    {
+        std::cout << "█";
+        Sleep(20);
+    }
+    system("cls");
+}s
